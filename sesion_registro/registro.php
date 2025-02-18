@@ -251,13 +251,14 @@
 		
 	$nombre = $_POST['nombre'];
 	$apellidos = $_POST['apellidos'];
+    $email = $_POST['email'];
 	$contrasena= $_POST['contrasena'];
     $dni = $_POST['dni'];
     $saldo = $_POST['saldo'];
     $tipo = $_POST['tipo'];
 	
 	
-	$query = "INSERT INTO usuarios (password, nombre, apellidos, dni, saldo, tipo) VALUES ('$contrasena', '$nombre', '$apellidos', '$dni', '$saldo', '$tipo')";
+	$query = "INSERT INTO usuarios (password, name, apellidos, dni, saldo, tipo, email) VALUES ('$contrasena', '$nombre', '$apellidos', '$dni', '$saldo', '$tipo', '$email')";
 
 	if (mysqli_query($conn, $query)) {
 		echo "<div class='center-container'>
