@@ -181,14 +181,42 @@
             .form-container .buttons input:hover {
                 background-color: #666;
             }
+            /* Estilos para la tabla */
+            table {
+                width: 80%;
+                margin: 20px auto;
+                border-collapse: collapse;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                background-color: #fff;
+            }
+
+            th, td {
+                padding: 12px 15px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+
+            th {
+                background-color: #333;
+                color: #fff;
+            }
+
+            tr:hover {
+                background-color: #f5f5f5;
+            }
+
+            img {
+                max-width: 100%;
+                height: auto;
+            }
         </style>
     </HEAD>
     <BODY>
         <header>
             <h1>Concesionario de Coches</h1>
             <div class="header-buttons">
-                <a href="login.html">Iniciar sesión</a>
-                <a href="registro.html">Registro</a>
+                <a href="../sesion_registro/registro.html">Registro</a>
+                <a href="../sesion_registro/login.html">Inicio de sesión</a>
             </div>
         </header>
         
@@ -199,30 +227,8 @@
                     <a>Coches</a>
                     <ul class="submenu">
                         <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="../coches/añadircoches.html">Añadir</a></li>
                         <li><a href="../coches/listarcoches.php">Listar</a></li>
                         <li><a href="../coches/buscarcoches.html">Buscar</a></li>
-                        <li><a href="../coches/modificarcoches.html">Modificar</a></li>
-                        <li><a href="../coches/borrarcoches.php">Borrar</a></li>
-                    </ul>
-                </li>
-                <li class="menu-item">
-                    <a>Usuarios</a>
-                    <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="../usuarios/añadirusuarios.html">Añadir</a></li>
-                        <li><a href="../usuarios/listarusuarios.php">Listar</a></li>
-                        <li><a href="../usuarios/buscarusuarios.html">Buscar</a></li>
-                        <li><a href="../usuarios/modificarusuarios.html">Modificar</a></li>
-                        <li><a href="../usuarios/borrarusuarios.php">Borrar</a></li>
-                    </ul>
-                </li>
-                <li class="menu-item">
-                    <a>Alquileres</a>
-                    <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="../alquileres/listaralquileres.php">Listar</a></li>
-                        <li><a href="../alquileres/borraralquileres.php">Borrar</a></li>
                     </ul>
                 </li>
             </ul>

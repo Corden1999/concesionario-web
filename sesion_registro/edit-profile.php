@@ -1,7 +1,6 @@
 <?php
 session_start();
 ?>
-
 <!DOCTYPE html>
 <HTML LANG="es">
 <HEAD>
@@ -221,77 +220,61 @@ session_start();
             <ul class="menu">
                 <!-- Menú principal horizontal -->
                 <li class="menu-item">
-                    <a>Coches</a>
-                    <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="añadircoches.html">Añadir</a></li>
-                        <li><a href="listarcoches.php">Listar</a></li>
-                        <li><a href="buscarcoches.html">Buscar</a></li>
-                        <li><a href="modificarcoches.html">Modificar</a></li>
-                        <li><a href="borrarcoches.php">Borrar</a></li>
-                    </ul>
-                </li>
-                <li class="menu-item">
-                    <a>Usuarios</a>
-                    <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="../usuarios/añadirusuarios.html">Añadir</a></li>
-                        <li><a href="../usuarios/listarusuarios.php">Listar</a></li>
-                        <li><a href="../usuarios/buscarusuarios.html">Buscar</a></li>
-                        <li><a href="../usuarios/modificarusuarios.html">Modificar</a></li>
-                        <li><a href="../usuarios/borrarusuarios.php">Borrar</a></li>
-                    </ul>
-                </li>
-                <li class="menu-item">
-                    <a>Alquileres</a>
-                    <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="../alquileres/listaralquileres.php">Listar</a></li>
-                        <li><a href="../alquileres/borraralquileres.php">Borrar</a></li>
-                    </ul>
+                    
                 </li>
             </ul>
         </nav>  
-  <div >
-<?php
-	// Connection info. file
-	include 'conn.php';	
-	
-	$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+  
+  <body>      
+    <?php
+    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true)
+    {  
+    } else {
+        echo "
+        <h4>Obligatorio hacer login para entrar en mi web</h4>
+        <p><a href='login.html'>Login Aquí!</a></p></div>";
+        exit;
+    }
+        // Comprobamos el tiempo de sesión
+        $now = time();            
+        if ($now > $_SESSION['expire'] )
+        {
+            session_destroy();
+            echo "<div>
+            <h4>Tu sesión ha expirado!</h4>
+            <p><a href='login.html'>Login Here</a></p></div>";
+            exit;
+        }
+    ?>
 
-	if (!$conn) {
-		die("Connection failed: " . mysqli_connect_error());
-	}
-	
-	$email = $_POST['email']; 
-	$password = $_POST['password'];
-	
-	$result = mysqli_query($conn, "SELECT Email, Password, Name FROM usuarios WHERE Email = '$email'");
-	
-	$row = mysqli_fetch_assoc($result);
-	
-	// Variable $hash hold the password hash on database
-	$hash = $row['Password'];
-	
-	
-	if ($_POST['password']== $hash) {	
-		$_SESSION['loggedin'] = true;
-		$_SESSION['name'] = $row['Name'];
-		$_SESSION['start'] = time();
-		$_SESSION['expire'] = $_SESSION['start'] + (1 * 60) ;						
-		
-        echo "<div class='welcome-container'>
-        <strong>¡Bienvenido!</strong> $row[Name]
-        <p><a href='edit-profile.php'>Editar Ficha</a></p>
-        <p><a href='logout.php'>Logout</a></p>
-      </div>";	
-	
-	} else {
-		echo "<div >Email o Password incorrectos!
-		<p><a href='login.html'><strong>¡Intentalo de nuevo!</strong></a></p></div>";			
-	}	
-?>
-</div>
+    <div >
+        <h2>Bienvenido: <?php echo $_SESSION['name']; ?></h2>
+        <h3>Editar tu datos</h3>
+        <div class="form-container">    
+    <form action="modificarusuarios2.php" method="post">
+        
+        <label for="contraseña">Password:</label>
+        <input type="password" name="contraseña" value="<?php echo $row['password']; ?>" required><br>
+        
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre" value="<?php echo $row['nombre']; ?>" required><br>
+
+        <label for="apellidos">Apellidos:</label>
+        <input type="text" name="apellidos" value="<?php echo $row['apellidos']; ?>" required><br>
+
+        <label for="dni">Email:</label>
+        <input type="text" name="dni" value="<?php echo $row['dni']; ?>" required><br>
+        
+        <label for="saldo">Saldo:</label>
+        <input type="text" name="saldo" value="<?php echo $row['saldo']; ?>" required><br>
+        
+        <div class="buttons">
+        <input type="submit" value="Actualizar">
+        </div>
+    </div>
+    </form>
+    <p><a href='logout.php'>Logout</a></p>
+    </div>
 
 	
 
