@@ -1,4 +1,6 @@
-
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <HTML LANG="es">
 <HEAD>
@@ -207,58 +209,43 @@
         }
     </style>
 </HEAD>
-  
-  <body>
-  <header>
-    <h1>Concesionario de Coches</h1>
+<BODY>
+        <header>
+            <h1>Concesionario de Coches</h1>
             
-    </header>
+        </header>
         
-       
-  <div >
+        <nav>
+            <ul class="menu">
+                <!-- Menú principal horizontal -->
+                <li class="menu-item">
+                    <a>Coches</a>
+                    <ul class="submenu">
+                        <li><a href="../index.html">Inicio</a></li>
+                        <li><a href="añadircoches.html">Añadir</a></li>
+                        <li><a href="listarcoches.php">Listar</a></li>
+                        <li><a href="buscarcoches.html">Buscar</a></li>
+                        <li><a href="modificarcoches.html">Modificar</a></li>
+                        <li><a href="borrarcoches.php">Borrar</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a>Alquileres</a>
+                    <ul class="submenu">
+                        <li><a href="../index.html">Inicio</a></li>
+                        <li><a href="../alquileres/listaralquileres.php">Listar</a></li>
+                        <li><a href="../alquileres/borraralquileres.php">Borrar</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+</body>
+
 <?php
-    session_start();
-	// Connection info. file
-	include 'conn.php';	
-	
-	$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
-
-	if (!$conn) {
-		die("Connection failed: " . mysqli_connect_error());
-	}
-	
-	$email = $_POST['email']; 
-	$password = $_POST['password'];
-	
-	$result = mysqli_query($conn, "SELECT Email, Password, Name, tipo FROM usuarios WHERE Email = '$email'");
-	
-	$row = mysqli_fetch_assoc($result);
-	
-	// Variable $hash hold the password hash on database
-	$hash = $row['Password'];
-	
-	
-	if ($_POST['password']== $hash) {	
-		$_SESSION['loggedin'] = true;
-		$_SESSION['name'] = $row['Name'];
-        $_SESSION['tipo'] = $row['tipo'];
-		$_SESSION['start'] = time();
-		$_SESSION['expire'] = $_SESSION['start'] + (1 * 60) ;						
-		
-
-      if ($_SESSION['tipo'] == 'administrador') {
-        header("Location: ../index_administrador.php");
-      } elseif ($_SESSION['tipo'] == 'comprador') {
-        header("Location: ../index_comprador.php");
-      } elseif ($_SESSION['tipo'] == 'vendedor') {
-        header("Location: ../index_vendedor.php");
-      }
-	
-	} else {
-		echo "<div >Email o Password incorrectos!
-		<p><a href='login.html'><strong>¡Intentalo de nuevo!</strong></a></p></div>";			
-	}	
+echo "<div class='welcome-container'>
+<strong>¡Bienvenido!</strong> $row[Name]
+<p><a href='edit-profile.php'>Editar Ficha</a></p>
+<p><a href='logout.php'>Logout</a></p>
+</div>";	
 ?>
-</div>
-	</body>
-</html>
