@@ -1,14 +1,14 @@
 <?php
 session_start();
 ?>
+<!DOCTYPE html>
 <HTML LANG="es">
 <HEAD>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Concesionario de Autos</title>
-</HEAD>
-<style>
-    * {
+    <title>pruebas</title>
+    <style>
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -215,7 +215,7 @@ session_start();
             height: auto;
         }
         /* Estilo para el contenedor de bienvenida */
-            .welcome-container {
+        .welcome-container {
             position: absolute;
             top: 20px;
             right: 20px;
@@ -236,103 +236,98 @@ session_start();
             text-decoration: underline;
             }
     </style>
-<BODY>
-<header>
-    <h1>Concesionario de Coches</h1>
-</header>
+</HEAD>
+    <BODY>
+        <header>
+            <h1>Concesionario de Coches</h1>
+        </header>
         
         <nav>
-            <ul class="menu">
+        <ul class="menu">
                 <!-- Menú principal horizontal -->
                 <li class="menu-item">
                     <a>Coches</a>
                     <ul class="submenu">
-                        <li><a href="../index_vendedor.php">Inicio</a></li>
-                        <li><a href="añadircoches1.php">Añadir</a></li>
-                        <li><a href="listarcoches.php">Listar</a></li>
-                        <li><a href="buscarcoches1.php">Buscar</a></li>
-                        <li><a href="modificarcoches1.php">Modificar</a></li>
-                        <li><a href="borrarcoches.php">Borrar</a></li>
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="../coches_administrador/añadircoches1.php">Añadir</a></li>
+                        <li><a href="../coches_administrador/listarcoches.php">Listar</a></li>
+                        <li><a href="../coches_administrador/buscarcoches1.php">Buscar</a></li>
+                        <li><a href="../coches_administrador/modificarcoches1.php">Modificar</a></li>
+                        <li><a href="../coches_administrador/borrarcoches.php">Borrar</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a>Usuarios</a>
+                    <ul class="submenu">
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="añadirusuarios1.php">Añadir</a></li>
+                        <li><a href="listarusuarios.php">Listar</a></li>
+                        <li><a href="buscarusuarios1.php">Buscar</a></li>
+                        <li><a href="modificarusuarios1.php">Modificar</a></li>
+                        <li><a href="borrarusuarios.php">Borrar</a></li>
                     </ul>
                 </li>
                 <li class="menu-item">
                     <a>Alquileres</a>
                     <ul class="submenu">
-                        <li><a href="../index_vendedor.php">Inicio</a></li>
-                        <li><a href="../alquileres_vendedor/listaralquileres.php">Listar</a></li>
-                        <li><a href="../alquileres_vendedor/borraralquileres.php">Borrar</a></li>
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="../alquileres_administrador/listaralquileres.php">Listar</a></li>
+                        <li><a href="../alquileres_administrador/borraralquileres.php">Borrar</a></li>
                     </ul>
                 </li>
             </ul>
         </nav>
 
-<H2>insercion de coche</H2>
-
-<?PHP
-
+    <?php
 $name = $_SESSION['name'];
 
 echo "<div class='welcome-container'>
     <strong>¡Bienvenido!</strong> $name
     <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
     <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
-    </div>";	
+    </div>";
 
-   // Conectar con el servidor de base de datos
-      $conexion = mysqli_connect ("localhost", "root", "rootroot","concesionario")
-         or die ("No se puede conectar con el servidor");
-		
-   $modelo = $_REQUEST['modelo'];
-   $marca = $_REQUEST['marca'];
-   $color = $_REQUEST['color'];
-   $precio = $_REQUEST['precio'];
-   $alquilado = $_REQUEST['alquilado'];
-   $target_dir = "../../img/";
-
-// Verificar si se envió un archivo
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['image'])) {
-$file = $_FILES['image'];
-
-// Obtener el nombre y ruta del archivo destino
-$target_file = $target_dir . basename($file["name"]);
-
-// Verificar si el archivo es realmente una imagen
-$check = getimagesize($file["tmp_name"]);
-if ($check === false) {
-    die("El archivo seleccionado no es una imagen.");
+$conn = mysqli_connect("localhost", "root", "rootroot", "concesionario");
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
+$sql = "SELECT id_usuario, password, Name, apellidos, dni, saldo, tipo, email FROM usuarios";
+$result = mysqli_query($conn, $sql);
+if (mysqli_num_rows($result) > 0) {
+    echo "<h1>Listado de usuarios</h1>";
+    echo "<form action='borrarusuarios2.php' method='post'>";
+    echo "<table border='1'>";
+    echo "<tr><th>Seleccionar</th><th>Password</th><th>Nombre</th><th>Apellidosr</th><th>Dni</th><th>Saldo</th><th>tipo</th><th>email</th></tr>";
+    // Mostrar cada piso con su checkbox
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo "<tr>";
+        echo "<td><input type='checkbox' name='delete_ids[]' value='" . $row['id_usuario'] . "'></td>";
+        echo "<td>" . htmlspecialchars($row['password']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['Name']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['apellidos']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['dni']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['saldo']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['tipo']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['email']) . "</td>";
 
-// Verificar si el archivo ya existe
-if (file_exists($target_file)) {
-    die("El archivo ya existe en el servidor.");
-}
-
-// Intentar mover el archivo al directorio de destino
-if (move_uploaded_file($file["tmp_name"], $target_file)) {
-    echo "La imagen " . htmlspecialchars(basename($file["name"])) . " se ha subido correctamente.";
+        echo "</tr>";
+    }
+    echo "</table>";
+    echo "<div style='text-align: center; margin-top: 20px;'>";
+    echo "<button type='submit' style='padding: 10px 20px; background-color: #555; color: #fff; border: 1px solid #444; border-radius: 5px; cursor: pointer; font-size: 1em;'>Eliminar seleccionados</button>";
+    echo "</div>";
+    echo "</form>";
 } else {
-    echo "Hubo un error al subir el archivo.";
+    echo "<h1>No hay usuarios disponibles</h1>";
 }
-} else {
-    echo "No se ha seleccionado ningún archivo.";
-}  
-   // Enviar consulta
-      $instruccion = "insert into Coches (modelo, marca, color, precio, alquilado, foto) values ('$modelo', '$marca', '$color', '$precio', '$alquilado', '$target_file')";
-      
-      if (mysqli_query ($conexion,$instruccion)) {
-         echo "coche insertado con exito";
-      }
-      else{
-         echo "Error al insertar coche" . mysqli_error($conexion);
-      }
 
-    
-// Cerrar 
-mysqli_close ($conexion);
-
-
-
+// Cerrar conexión
+mysqli_close($conn);
 ?>
 
-</BODY>
-</HTML>
+  
+
+</body>
+
+
+</html>

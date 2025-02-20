@@ -207,75 +207,134 @@ session_start();
         .welcome-container a:hover {
         text-decoration: underline;
         }
+
+        /* Estilos para la tabla */
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </HEAD>
-  
-  <body>
-  <header>
-            <h1>Concesionario de Coches</h1>
- </header>
-        
-  
-  <body>      
-    <?php
-    session_start();
-
-    $name = $_SESSION['name'];
+<BODY>
+    <header>
+        <h1>Concesionario de Coches</h1>
+    </header>
     
-    echo "<div class='welcome-container'>
-        <strong>¡Bienvenido!</strong> $name
-        <p><a href='../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
-        <p><a href='../sesion_registro/logout.php'>Logout</a></p>
-        </div>";	
-    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true)
-    {  
-    } else {
-        echo "
-        <h4>Obligatorio hacer login para entrar en mi web</h4>
-        <p><a href='login.html'>Login Aquí!</a></p></div>";
-        exit;
-    }
-        // Comprobamos el tiempo de sesión
-        $now = time();            
-        if ($now > $_SESSION['expire'] )
-        {
-            session_destroy();
-            echo "<div>
-            <h4>Tu sesión ha expirado!</h4>
-            <p><a href='login.html'>Login Here</a></p></div>";
-            exit;
+        <nav>
+            <ul class="menu">
+                <!-- Menú principal horizontal -->
+                <li class="menu-item">
+                    <a>Coches</a>
+                    <ul class="submenu">
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="añadircoches1.php">Añadir</a></li>
+                        <li><a href="listarcoches.php">Listar</a></li>
+                        <li><a href="buscarcoches1.php">Buscar</a></li>
+                        <li><a href="modificarcoches1.php">Modificar</a></li>
+                        <li><a href="borrarcoches.php">Borrar</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a>Usuarios</a>
+                    <ul class="submenu">
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="../usuarios_administrador/añadirusuarios1.php">Añadir</a></li>
+                        <li><a href="../usuarios_administrador/listarusuarios.php">Listar</a></li>
+                        <li><a href="../usuarios_administrador/buscarusuarios1.php">Buscar</a></li>
+                        <li><a href="../usuarios_administrador/modificarusuarios1.php">Modificar</a></li>
+                        <li><a href="../usuarios_administrador/borrarusuarios.php">Borrar</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a>Alquileres</a>
+                    <ul class="submenu">
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="../alquileres_administrador/listaralquileres.php">Listar</a></li>
+                        <li><a href="../alquileres_administrador/borraralquileres.php">Borrar</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+    <H1>Listar Coches</H1>
+
+    <?PHP
+        $name = $_SESSION['name'];
+
+        echo "<div class='welcome-container'>
+            <strong>¡Bienvenido!</strong> $name
+            <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
+            <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
+            </div>";	
+
+        // Conectar con el servidor de base de datos
+        $conexion = mysqli_connect ("localhost", "root", "rootroot")
+            or die ("No se puede conectar con el servidor");
+        
+        // Seleccionar base de datos
+        mysqli_select_db ($conexion,"concesionario")
+            or die ("No se puede seleccionar la base de datos");
+        
+        // Enviar consulta
+        $instruccion = "select * from Coches";
+        $consulta = mysqli_query ($conexion,$instruccion)
+            or die ("Fallo en la consulta");
+        
+        // Mostrar resultados de la consulta
+        $nfilas = mysqli_num_rows ($consulta);
+        if ($nfilas > 0) {
+            print ("<TABLE>\n");
+            print ("<TR>\n");
+            print ("<TH>Modelo</TH>\n");
+            print ("<TH>Marca</TH>\n");
+            print ("<TH>Color</TH>\n");
+            print ("<TH>Precio</TH>\n");
+            print ("<TH>Alquilado</TH>\n");
+            print ("<TH>Foto</TH>\n");
+            print ("</TR>\n");
+
+            for ($i=0; $i<$nfilas; $i++) {
+                $resultado = mysqli_fetch_array ($consulta);
+                print ("<TR>\n");
+                print ("<TD>" . $resultado['modelo'] . "</TD>\n");
+                print ("<TD>" . $resultado['marca'] . "</TD>\n");
+                print ("<TD>" . $resultado['color'] . "</TD>\n");
+                print ("<TD>" . $resultado['precio'] . "</TD>\n");
+                print ("<TD>" . $resultado['alquilado'] . "</TD>\n");
+                print ("<TD><img src='" . $resultado['foto'] . "' width='80px'></TD>\n");
+                print ("</TR>\n");
+            }
+
+            print ("</TABLE>\n");
+        } else {
+            print ("No hay coches disponibles");
         }
+
+        // Cerrar conexión
+        mysqli_close ($conexion);
     ?>
-
-    <div >
-        <h2>Bienvenido: <?php echo $_SESSION['name']; ?></h2>
-        <h3>Editar tu datos</h3>
-        <div class="form-container">    
-    <form action="modificarusuarios2.php" method="post">
-        
-        <label for="contraseña">Password:</label>
-        <input type="password" name="contraseña" value="<?php echo $row['password']; ?>" required><br>
-        
-        <label for="nombre">Nombre:</label>
-        <input type="text" name="nombre" value="<?php echo $row['nombre']; ?>" required><br>
-
-        <label for="apellidos">Apellidos:</label>
-        <input type="text" name="apellidos" value="<?php echo $row['apellidos']; ?>" required><br>
-
-        <label for="dni">Email:</label>
-        <input type="text" name="dni" value="<?php echo $row['dni']; ?>" required><br>
-        
-        <label for="saldo">Saldo:</label>
-        <input type="text" name="saldo" value="<?php echo $row['saldo']; ?>" required><br>
-        
-        <div class="buttons">
-        <input type="submit" value="Actualizar">
-        </div>
-    </div>
-    </form>
-    </div>
-
-	
-
-	</body>
-</html>
+</BODY>
+</HTML>

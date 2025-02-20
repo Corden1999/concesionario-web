@@ -247,7 +247,7 @@ session_start();
                 <li class="menu-item">
                     <a>Coches</a>
                     <ul class="submenu">
-                        <li><a href="../index_vendedor.php">Inicio</a></li>
+                        <li><a href="../index_administrador.php">Inicio</a></li>
                         <li><a href="añadircoches1.php">Añadir</a></li>
                         <li><a href="listarcoches.php">Listar</a></li>
                         <li><a href="buscarcoches1.php">Buscar</a></li>
@@ -256,11 +256,22 @@ session_start();
                     </ul>
                 </li>
                 <li class="menu-item">
+                    <a>Usuarios</a>
+                    <ul class="submenu">
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="../usuarios_administrador/añadirusuarios1.php">Añadir</a></li>
+                        <li><a href="../usuarios_administrador/listarusuarios.php">Listar</a></li>
+                        <li><a href="../usuarios_administrador/buscarusuarios1.php">Buscar</a></li>
+                        <li><a href="../usuarios_administrador/modificarusuarios1.php">Modificar</a></li>
+                        <li><a href="../usuarios_administrador/borrarusuarios.php">Borrar</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item">
                     <a>Alquileres</a>
                     <ul class="submenu">
-                        <li><a href="../index_vendedor.php">Inicio</a></li>
-                        <li><a href="../alquileres_vendedor/listaralquileres.php">Listar</a></li>
-                        <li><a href="../alquileres_vendedor/borraralquileres.php">Borrar</a></li>
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="../alquileres_administrador/listaralquileres.php">Listar</a></li>
+                        <li><a href="../alquileres_administrador/borraralquileres.php">Borrar</a></li>
                     </ul>
                 </li>
             </ul>

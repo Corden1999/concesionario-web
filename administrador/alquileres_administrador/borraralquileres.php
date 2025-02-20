@@ -186,96 +186,149 @@ session_start();
             background-color: #666;
         }
 
+        /* Estilos para la tabla */
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
         /* Estilo para el contenedor de bienvenida */
         .welcome-container {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background-color: #555;
-        padding: 10px;
-        border-radius: 5px;
-        color: #fff;
-        text-align: right;
-        }
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #555;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            text-align: right;
+            }
 
         .welcome-container a {
-        color: #fff;
-        text-decoration: none;
-        font-size: 0.9em;
-        }
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9em;
+            }
 
         .welcome-container a:hover {
-        text-decoration: underline;
-        }
+            text-decoration: underline;
+            }
     </style>
 </HEAD>
-  
-  <body>
-  <header>
+    <BODY>
+        <header>
             <h1>Concesionario de Coches</h1>
- </header>
+            
+        </header>
         
-  
-  <body>      
+        <nav>
+            <ul class="menu">
+                <!-- Menú principal horizontal -->
+                <li class="menu-item">
+                    <a>Coches</a>
+                    <ul class="submenu">
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="../coches_administrador/añadircoches1.php">Añadir</a></li>
+                        <li><a href="../coches_administrador/listarcoches.php">Listar</a></li>
+                        <li><a href="../coches_administrador/buscarcoches1.php">Buscar</a></li>
+                        <li><a href="../coches_administrador/modificarcoches1.php">Modificar</a></li>
+                        <li><a href="../coches_administrador/borrarcoches.php">Borrar</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a>Usuarios</a>
+                    <ul class="submenu">
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="../coches_administrador/añadirusuarios1.php">Añadir</a></li>
+                        <li><a href="../coches_administrador/listarusuarios.php">Listar</a></li>
+                        <li><a href="../coches_administrador/buscarusuarios1.php">Buscar</a></li>
+                        <li><a href="../coches_administrador/modificarusuarios1.php">Modificar</a></li>
+                        <li><a href="../coches_administrador/borrarusuarios.php">Borrar</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a>Alquileres</a>
+                    <ul class="submenu">
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="listaralquileres.php">Listar</a></li>
+                        <li><a href="borraralquileres.php">Borrar</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+
     <?php
-    session_start();
+$name = $_SESSION['name'];
 
-    $name = $_SESSION['name'];
-    
-    echo "<div class='welcome-container'>
-        <strong>¡Bienvenido!</strong> $name
-        <p><a href='../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
-        <p><a href='../sesion_registro/logout.php'>Logout</a></p>
-        </div>";	
-    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true)
-    {  
-    } else {
-        echo "
-        <h4>Obligatorio hacer login para entrar en mi web</h4>
-        <p><a href='login.html'>Login Aquí!</a></p></div>";
-        exit;
+echo "<div class='welcome-container'>
+    <strong>¡Bienvenido!</strong> $name
+    <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
+    <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
+    </div>";	
+
+$conn = mysqli_connect("localhost", "root", "rootroot", "concesionario");
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+$sql = "SELECT id_alquiler, id_usuario, id_coche, prestado, devuelto FROM alquileres";
+$result = mysqli_query($conn, $sql);
+if (mysqli_num_rows($result) > 0) {
+    echo "<h1>Borrado de coches</h1>";
+    echo "<form action='borrarcoches2.php' method='post'>";
+    echo "<table border='1'>";
+    echo "<tr><th>Seleccionar</th><th>id_alquiler</th><th>id_usuario</th><th>id_coche</th><th>Prestado</th><th>Devuelto</th></tr>";
+    // Mostrar cada piso con su checkbox
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo "<tr>";
+        echo "<td><input type='checkbox' name='delete_ids[]' value='" . $row['id_alquiler'] . "'></td>";
+        echo "<td>" . htmlspecialchars($row['id_alquiler']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['id_usuario']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['id_coche']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['prestado']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['devuelto']) . "</td>";
+        echo "</tr>";
     }
-        // Comprobamos el tiempo de sesión
-        $now = time();            
-        if ($now > $_SESSION['expire'] )
-        {
-            session_destroy();
-            echo "<div>
-            <h4>Tu sesión ha expirado!</h4>
-            <p><a href='login.html'>Login Here</a></p></div>";
-            exit;
-        }
-    ?>
+    echo "</table>";
+    echo "<br>";
+    echo "<div style='text-align: center; margin-top: 20px;'>";
+    echo "<button type='submit' style='padding: 10px 20px; background-color: #555; color: #fff; border: 1px solid #444; border-radius: 5px; cursor: pointer; font-size: 1em;'>Eliminar seleccionados</button>";
+    echo "</div>";
+    echo "</form>";
+} else {
+    echo "<h1>No hay coches disponibles</h1>";
+}
 
-    <div >
-        <h2>Bienvenido: <?php echo $_SESSION['name']; ?></h2>
-        <h3>Editar tu datos</h3>
-        <div class="form-container">    
-    <form action="modificarusuarios2.php" method="post">
-        
-        <label for="contraseña">Password:</label>
-        <input type="password" name="contraseña" value="<?php echo $row['password']; ?>" required><br>
-        
-        <label for="nombre">Nombre:</label>
-        <input type="text" name="nombre" value="<?php echo $row['nombre']; ?>" required><br>
+// Cerrar conexión
+mysqli_close($conn);
+?>
 
-        <label for="apellidos">Apellidos:</label>
-        <input type="text" name="apellidos" value="<?php echo $row['apellidos']; ?>" required><br>
+  
 
-        <label for="dni">Email:</label>
-        <input type="text" name="dni" value="<?php echo $row['dni']; ?>" required><br>
-        
-        <label for="saldo">Saldo:</label>
-        <input type="text" name="saldo" value="<?php echo $row['saldo']; ?>" required><br>
-        
-        <div class="buttons">
-        <input type="submit" value="Actualizar">
-        </div>
-    </div>
-    </form>
-    </div>
+</body>
 
-	
 
-	</body>
 </html>

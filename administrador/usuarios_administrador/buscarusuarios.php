@@ -2,13 +2,12 @@
 session_start();
 ?>
 <HTML LANG="es">
-<HEAD>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Concesionario de Autos</title>
-</HEAD>
-<style>
-    * {
+    <HEAD>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>pruebas</title>
+        <style>
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -214,7 +213,9 @@ session_start();
             max-width: 100%;
             height: auto;
         }
-        /* Estilo para el contenedor de bienvenida */
+
+
+    /* Estilo para el contenedor de bienvenida */
             .welcome-container {
             position: absolute;
             top: 20px;
@@ -235,11 +236,12 @@ session_start();
             .welcome-container a:hover {
             text-decoration: underline;
             }
-    </style>
-<BODY>
-<header>
-    <h1>Concesionario de Coches</h1>
-</header>
+        </style>
+    </HEAD>
+    <BODY>
+        <header>
+            <h1>Concesionario de Coches</h1>
+        </header>
         
         <nav>
             <ul class="menu">
@@ -247,92 +249,106 @@ session_start();
                 <li class="menu-item">
                     <a>Coches</a>
                     <ul class="submenu">
-                        <li><a href="../index_vendedor.php">Inicio</a></li>
-                        <li><a href="añadircoches1.php">Añadir</a></li>
-                        <li><a href="listarcoches.php">Listar</a></li>
-                        <li><a href="buscarcoches1.php">Buscar</a></li>
-                        <li><a href="modificarcoches1.php">Modificar</a></li>
-                        <li><a href="borrarcoches.php">Borrar</a></li>
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="../coches_administrador/añadircoches1.php">Añadir</a></li>
+                        <li><a href="../coches_administrador/listarcoches.php">Listar</a></li>
+                        <li><a href="../coches_administrador/buscarcoches1.php">Buscar</a></li>
+                        <li><a href="../coches_administrador/modificarcoches1.php">Modificar</a></li>
+                        <li><a href="../coches_administrador/borrarcoches.php">Borrar</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a>Usuarios</a>
+                    <ul class="submenu">
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="añadirusuarios1.php">Añadir</a></li>
+                        <li><a href="listarusuarios.php">Listar</a></li>
+                        <li><a href="buscarusuarios1.php">Buscar</a></li>
+                        <li><a href="modificarusuarios1.php">Modificar</a></li>
+                        <li><a href="borrarusuarios.php">Borrar</a></li>
                     </ul>
                 </li>
                 <li class="menu-item">
                     <a>Alquileres</a>
                     <ul class="submenu">
-                        <li><a href="../index_vendedor.php">Inicio</a></li>
-                        <li><a href="../alquileres_vendedor/listaralquileres.php">Listar</a></li>
-                        <li><a href="../alquileres_vendedor/borraralquileres.php">Borrar</a></li>
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="../alquileres_administrador/listaralquileres.php">Listar</a></li>
+                        <li><a href="../alquileres_administrador/borraralquileres.php">Borrar</a></li>
                     </ul>
                 </li>
             </ul>
         </nav>
 
-<H2>insercion de coche</H2>
+<H1>Busqueda de usuario</H1>
 
 <?PHP
+    $name = $_SESSION['name'];
 
-$name = $_SESSION['name'];
-
-echo "<div class='welcome-container'>
-    <strong>¡Bienvenido!</strong> $name
-    <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
-    <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
-    </div>";	
-
-   // Conectar con el servidor de base de datos
-      $conexion = mysqli_connect ("localhost", "root", "rootroot","concesionario")
-         or die ("No se puede conectar con el servidor");
-		
-   $modelo = $_REQUEST['modelo'];
-   $marca = $_REQUEST['marca'];
-   $color = $_REQUEST['color'];
-   $precio = $_REQUEST['precio'];
-   $alquilado = $_REQUEST['alquilado'];
-   $target_dir = "../../img/";
-
-// Verificar si se envió un archivo
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['image'])) {
-$file = $_FILES['image'];
-
-// Obtener el nombre y ruta del archivo destino
-$target_file = $target_dir . basename($file["name"]);
-
-// Verificar si el archivo es realmente una imagen
-$check = getimagesize($file["tmp_name"]);
-if ($check === false) {
-    die("El archivo seleccionado no es una imagen.");
-}
-
-// Verificar si el archivo ya existe
-if (file_exists($target_file)) {
-    die("El archivo ya existe en el servidor.");
-}
-
-// Intentar mover el archivo al directorio de destino
-if (move_uploaded_file($file["tmp_name"], $target_file)) {
-    echo "La imagen " . htmlspecialchars(basename($file["name"])) . " se ha subido correctamente.";
-} else {
-    echo "Hubo un error al subir el archivo.";
-}
-} else {
-    echo "No se ha seleccionado ningún archivo.";
-}  
-   // Enviar consulta
-      $instruccion = "insert into Coches (modelo, marca, color, precio, alquilado, foto) values ('$modelo', '$marca', '$color', '$precio', '$alquilado', '$target_file')";
-      
-      if (mysqli_query ($conexion,$instruccion)) {
-         echo "coche insertado con exito";
-      }
-      else{
-         echo "Error al insertar coche" . mysqli_error($conexion);
-      }
-
+    echo "<div class='welcome-container'>
+        <strong>¡Bienvenido!</strong> $name
+        <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
+        <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
+        </div>";
+       // Conectar con el servidor de base de datos
+          $conexion = mysqli_connect ("localhost", "root", "rootroot","concesionario")
+             or die ("No se puede conectar con el servidor");
+            
+       $password = $_REQUEST['contrasena'];
+       $nombre = $_REQUEST['nombre'];
+       $apellidos = $_REQUEST['apellidos'];
+       $dni = $_REQUEST['dni'];
+       $saldo = $_REQUEST['saldo'];
+       $tipo = $_REQUEST['tipo'];
+       $email = $_REQUEST['email'];
     
-// Cerrar 
-mysqli_close ($conexion);
-
-
-
-?>
-
+       // Enviar consulta
+          $instruccion = "select * from Usuarios where password='$password' or Name='$nombre' or apellidos='$apellidos' or dni='$dni' or saldo='$saldo' or tipo='$tipo' or email='$email'";
+          $consulta = mysqli_query ($conexion,$instruccion)
+             or die ("Fallo en la consulta");
+          
+          $nfilas = mysqli_num_rows ($consulta);
+          if ($nfilas > 0)
+          {
+             print ("<TABLE>\n");
+             print ("<TR>\n");
+             print ("<TH>password</TH>\n");
+             print ("<TH>nombre</TH>\n");
+             print ("<TH>apellidos</TH>\n");
+             print ("<TH>dni</TH>\n");
+             print ("<TH>saldo</TH>\n");
+             print ("<TH>tipo</TH>\n");
+             print ("<TH>email</TH>\n");
+             print ("</TR>\n");
+    
+             for ($i=0; $i<$nfilas; $i++)
+             {
+                $resultado = mysqli_fetch_array ($consulta);
+                print ("<TR>\n");
+                print ("<TD>" . $resultado['password'] . "</TD>\n");
+                print ("<TD>" . $resultado['Name'] . "</TD>\n");
+                print ("<TD>" . $resultado['apellidos'] . "</TD>\n");
+                print ("<TD>" . $resultado['dni'] . "</TD>\n");
+                print ("<TD>" . $resultado['saldo'] . "</TD>\n");
+                print ("<TD>" . $resultado['tipo'] . "</TD>\n");
+                print ("<TD>" . $resultado['email'] . "</TD>\n");
+                
+                print ("</TR>\n");
+             }
+    
+             print ("</TABLE>\n");
+          }
+          else {
+             print ("No hay noticias que coincidan");
+          }
+          
+    
+    // Cerrar 
+    mysqli_close ($conexion);
+    
+    ?>
+    
+    </BODY>
+    </HTML>
+    
 </BODY>
 </HTML>

@@ -209,73 +209,85 @@ session_start();
         }
     </style>
 </HEAD>
-  
-  <body>
-  <header>
+<body>
+        <header>
             <h1>Concesionario de Coches</h1>
- </header>
+            
+        </header>
         
-  
-  <body>      
-    <?php
-    session_start();
+        <nav>
+            <ul class="menu">
+                <!-- Menú principal horizontal -->
+                <li class="menu-item">
+                    <a>Coches</a>
+                    <ul class="submenu">
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="añadircoches1.php">Añadir</a></li>
+                        <li><a href="listarcoches.php">Listar</a></li>
+                        <li><a href="buscarcoches1.php">Buscar</a></li>
+                        <li><a href="modificarcoches1.php">Modificar</a></li>
+                        <li><a href="borrarcoches.php">Borrar</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a>Usuarios</a>
+                    <ul class="submenu">
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="../usuarios_administrador/añadirusuarios1.php">Añadir</a></li>
+                        <li><a href="../usuarios_administrador/listarusuarios.php">Listar</a></li>
+                        <li><a href="../usuarios_administrador/buscarusuarios1.php">Buscar</a></li>
+                        <li><a href="../usuarios_administrador/modificarusuarios1.php">Modificar</a></li>
+                        <li><a href="../usuarios_administrador/borrarusuarios.php">Borrar</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a>Alquileres</a>
+                    <ul class="submenu">
+                        <li><a href="../index_administrador.php">Inicio</a></li>
+                        <li><a href="../alquileres_administrador/listaralquileres.php">Listar</a></li>
+                        <li><a href="../alquileres_administrador/borraralquileres.php">Borrar</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
 
-    $name = $_SESSION['name'];
-    
-    echo "<div class='welcome-container'>
-        <strong>¡Bienvenido!</strong> $name
-        <p><a href='../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
-        <p><a href='../sesion_registro/logout.php'>Logout</a></p>
-        </div>";	
-    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true)
-    {  
-    } else {
-        echo "
-        <h4>Obligatorio hacer login para entrar en mi web</h4>
-        <p><a href='login.html'>Login Aquí!</a></p></div>";
-        exit;
-    }
-        // Comprobamos el tiempo de sesión
-        $now = time();            
-        if ($now > $_SESSION['expire'] )
-        {
-            session_destroy();
-            echo "<div>
-            <h4>Tu sesión ha expirado!</h4>
-            <p><a href='login.html'>Login Here</a></p></div>";
-            exit;
-        }
-    ?>
+    <div class="form-container">
+    <h2>Añadir coches</H2>
+    <form action ='añadircoches.php' method="post" enctype="multipart/form-data">
+      <label for="modelo">modelo:</label>
+      <input type="text" name="modelo" required><br><br>
 
-    <div >
-        <h2>Bienvenido: <?php echo $_SESSION['name']; ?></h2>
-        <h3>Editar tu datos</h3>
-        <div class="form-container">    
-    <form action="modificarusuarios2.php" method="post">
-        
-        <label for="contraseña">Password:</label>
-        <input type="password" name="contraseña" value="<?php echo $row['password']; ?>" required><br>
-        
-        <label for="nombre">Nombre:</label>
-        <input type="text" name="nombre" value="<?php echo $row['nombre']; ?>" required><br>
+      <label for="marca">marca:</label>
+      <input type="text" name="marca" required><br><br>
 
-        <label for="apellidos">Apellidos:</label>
-        <input type="text" name="apellidos" value="<?php echo $row['apellidos']; ?>" required><br>
+      <label for="color">color:</label>
+      <input type="text" name="color" required><br><br>
 
-        <label for="dni">Email:</label>
-        <input type="text" name="dni" value="<?php echo $row['dni']; ?>" required><br>
-        
-        <label for="saldo">Saldo:</label>
-        <input type="text" name="saldo" value="<?php echo $row['saldo']; ?>" required><br>
-        
-        <div class="buttons">
-        <input type="submit" value="Actualizar">
-        </div>
+      <label for="precio">precio:</label>
+      <input type="text" name="precio" required><br><br>
+
+      <label for="alquilado">alquilado:</label>
+      <select name="alquilado">
+         <option value="si">si</option>
+         <option value="no">no</option>
+      </select><br><br>
+
+      <label for="image">Selecciona una imagen:</label><br>
+      <input type="file" name="image" id="image" accept="image/*"><br><br>
+
+      <div class="buttons">
+        <input type="submit" value="Añadir">
+        <input type="reset" value="Borrar">
     </div>
-    </form>
-    </div>
+</body>
 
-	
+<?php
 
-	</body>
-</html>
+$name = $_SESSION['name'];
+
+echo "<div class='welcome-container'>
+    <strong>¡Bienvenido!</strong> $name
+    <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
+    <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
+    </div>";	
+?>
