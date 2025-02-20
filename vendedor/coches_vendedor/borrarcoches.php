@@ -186,34 +186,61 @@ session_start();
             background-color: #666;
         }
 
+        /* Estilos para la tabla */
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
         /* Estilo para el contenedor de bienvenida */
-        .welcome-container {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background-color: #555;
-        padding: 10px;
-        border-radius: 5px;
-        color: #fff;
-        text-align: right;
-        }
+            .welcome-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #555;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            text-align: right;
+            }
 
-        .welcome-container a {
-        color: #fff;
-        text-decoration: none;
-        font-size: 0.9em;
-        }
+            .welcome-container a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9em;
+            }
 
-        .welcome-container a:hover {
-        text-decoration: underline;
-        }
+            .welcome-container a:hover {
+            text-decoration: underline;
+            }
     </style>
 </HEAD>
-<BODY>
-        <header>
-            <h1>Concesionario de Coches</h1>
-            
-        </header>
+    <BODY>
+    <header>
+    <h1>Concesionario de Coches</h1>
+</header>
         
         <nav>
             <ul class="menu">
@@ -221,31 +248,74 @@ session_start();
                 <li class="menu-item">
                     <a>Coches</a>
                     <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="añadircoches.html">Añadir</a></li>
+                        <li><a href="../index_vendedor.php">Inicio</a></li>
+                        <li><a href="añadircoches1.php">Añadir</a></li>
                         <li><a href="listarcoches.php">Listar</a></li>
-                        <li><a href="buscarcoches.html">Buscar</a></li>
-                        <li><a href="modificarcoches.html">Modificar</a></li>
+                        <li><a href="buscarcoches1.php">Buscar</a></li>
+                        <li><a href="modificarcoches1.php">Modificar</a></li>
                         <li><a href="borrarcoches.php">Borrar</a></li>
                     </ul>
                 </li>
                 <li class="menu-item">
                     <a>Alquileres</a>
                     <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="../alquileres/listaralquileres.php">Listar</a></li>
-                        <li><a href="../alquileres/borraralquileres.php">Borrar</a></li>
+                        <li><a href="../index_vendedor.php">Inicio</a></li>
+                        <li><a href="../alquileres_vendedor/listaralquileres.php">Listar</a></li>
+                        <li><a href="../alquileres_vendedor/borraralquileres.php">Borrar</a></li>
                     </ul>
                 </li>
             </ul>
         </nav>
 
+    <?php
+$name = $_SESSION['name'];
+
+echo "<div class='welcome-container'>
+    <strong>¡Bienvenido!</strong> $name
+    <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
+    <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
+    </div>";	
+
+$conn = mysqli_connect("localhost", "root", "rootroot", "concesionario");
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+$sql = "SELECT id_coche, modelo, marca, color, precio, alquilado, foto FROM coches";
+$result = mysqli_query($conn, $sql);
+if (mysqli_num_rows($result) > 0) {
+    echo "<h1>Borrado de coches</h1>";
+    echo "<form action='borrarcoches2.php' method='post'>";
+    echo "<table border='1'>";
+    echo "<tr><th>Seleccionar</th><th>Modelo</th><th>Marca</th><th>Color</th><th>Precio</th><th>Alquilado</th><th>Foto</th></tr>";
+    // Mostrar cada piso con su checkbox
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo "<tr>";
+        echo "<td><input type='checkbox' name='delete_ids[]' value='" . $row['id_coche'] . "'></td>";
+        echo "<td>" . htmlspecialchars($row['modelo']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['marca']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['color']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['precio']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['alquilado']) . "</td>";
+        echo "<td><img src='" . htmlspecialchars($row['foto']) . "' width=80px></td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+    echo "<br>";
+    echo "<div style='text-align: center; margin-top: 20px;'>";
+    echo "<button type='submit' style='padding: 10px 20px; background-color: #555; color: #fff; border: 1px solid #444; border-radius: 5px; cursor: pointer; font-size: 1em;'>Eliminar seleccionados</button>";
+    echo "</div>";
+    echo "</form>";
+} else {
+    echo "<h1>No hay coches disponibles</h1>";
+}
+
+// Cerrar conexión
+mysqli_close($conn);
+?>
+
+  
+
 </body>
 
-<?php
-echo "<div class='welcome-container'>
-<strong>¡Bienvenido!</strong> $row[Name]
-<p><a href='edit-profile.php'>Editar Ficha</a></p>
-<p><a href='logout.php'>Logout</a></p>
-</div>";	
-?>
+
+</html>
