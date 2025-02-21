@@ -21,7 +21,7 @@
 	$hash = $row['Password'];
 	
 	
-	if ($_POST['password']== $hash) {	
+	if (password_verify($password, $hash)) {	
 		$_SESSION['loggedin'] = true;
 		$_SESSION['name'] = $row['Name'];
         $_SESSION['tipo'] = $row['tipo'];
@@ -41,4 +41,5 @@
 		echo "<div >Email o Password incorrectos!
 		<p><a href='login.html'><strong>¡Intentalo de nuevo!</strong></a></p></div>";			
 	}	
+	mysqli_close($conn);
 ?>

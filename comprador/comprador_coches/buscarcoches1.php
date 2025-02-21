@@ -1,6 +1,8 @@
-<!doctype html>
-<html lang="en">
-<HEAD>
+<?php
+session_start();
+?>
+<HTML LANG="es">
+    <HEAD>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>pruebas</title>
@@ -147,18 +149,32 @@
                 color: #555;
             }
             
-            .form-container input {
+            .form-container input,
+            .form-container select {
                 width: 100%;
                 padding: 10px;
                 margin-bottom: 15px;
                 border: 1px solid #ccc;
                 border-radius: 5px;
                 font-size: 1em;
+                background-color: #fff;
+                color: #333;
             }
             
-            .form-container input:focus {
+            .form-container input:focus,
+            .form-container select:focus {
                 border-color: #555;
                 outline: none;
+            }
+            
+            /* Estilo para el select personalizado */
+            .form-container select {
+                appearance: none; /* Elimina el estilo por defecto del navegador */
+                background-image: url('data:image/svg+xml;utf8,<svg fill="%23333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+                background-repeat: no-repeat;
+                background-position: right 10px center;
+                background-size: 12px;
+                padding-right: 30px; /* Espacio para la flecha */
             }
             
             /* Estilo para los botones del formulario (igual que los del encabezado) */
@@ -183,95 +199,86 @@
                 background-color: #666;
             }
 
-            /* Estilo para el botón de inicio de sesión */
-            .login-button {
-                padding: 10px 20px;
-                background-color: #555;
-                color: #fff;
-                text-decoration: none;
-                border: 1px solid #444;
-                border-radius: 5px;
-                font-size: 1em;
-                cursor: pointer;
-                display: inline-block;
-                text-align: center;
+             /* Estilo para el contenedor de bienvenida */
+            .welcome-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #555;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            text-align: right;
             }
 
-            .login-button:hover {
-                background-color: #666;
+            .welcome-container a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9em;
             }
 
-            /* Contenedor para centrar el botón */
-            .center-container {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh; /* Ocupa toda la altura de la pantalla */
-                flex-direction: column;
-                text-align: center;
+            .welcome-container a:hover {
+            text-decoration: underline;
             }
         </style>
-</HEAD>
-<body>
-<header>
-    <h1>Concesionario de Coches</h1>
-        <div class="header-buttons">
-            <a href="registro.html">Registro</a>
-            <a href="login.html">Inicio de sesión</a><!-- cambiar -->
-        </div>
-</header>
+    </HEAD>
+    <BODY>
+        <header>
+            <h1>Concesionario de Coches</h1>
+        </header>
         
-<nav>
-    <ul class="menu">
-        <!-- Menú principal horizontal -->
-        <li class="menu-item">
-            <a>Coches</a>
-            <ul class="submenu">
-                <li><a href="../index.html">Inicio</a></li>
-                <li><a href="../coches/listarcoches.php">Listar</a></li>
-                <li><a href="../coches/buscarcoches.html">Buscar</a></li>
+        <nav>
+            <ul class="menu">
+                <!-- Menú principal horizontal -->
+                <li class="menu-item">
+                    <a>Coches</a>
+                    <ul class="submenu">
+                        <li><a href="../index_comprador.php">Inicio</a></li>
+                        <li><a href="listarcoches.php">Listar</a></li>
+                        <li><a href="buscarcoches1.php">Buscar</a></li>
+                    </ul>
             </ul>
-        </li>
-    </ul>
-</nav>
+    </nav>
 
-<div class="container">
+    <div class="form-container">
+   <H2>Buscar coches</H2>
+   <form action ='buscarcoches.php' method="post">
+      <label for="modelo">modelo:</label>
+      <input type="text" name="modelo" ><br><br>
 
-	<?php
+      <label for="marca">marca:</label>
+      <input type="text" name="marca" ><br><br>
 
-	include 'conn.php';
+      <label for="color">color:</label>
+      <input type="text" name="color" ><br><br>
 
-	$conn = mysqli_connect("localhost", "root", "rootroot", "concesionario");
+      <label for="precio">precio:</label>
+      <input type="text" name="precio" ><br><br>
 
-	// Check connection
-	if (!$conn) {
-		die("Connection failed: " . mysqli_connect_error());
-	}
-	
-		
-	$nombre = $_POST['nombre'];
-	$apellidos = $_POST['apellidos'];
-    $email = $_POST['email'];
-	$hash= $_POST['contrasena'];
-    $dni = $_POST['dni'];
-    $saldo = $_POST['saldo'];
-    $tipo = $_POST['tipo'];
-	$contrasena_encriptada = password_hash($hash, PASSWORD_DEFAULT);
-	$query = "INSERT INTO usuarios (password, name, apellidos, dni, saldo, tipo, email) VALUES ('$contrasena_encriptada', '$nombre', '$apellidos', '$dni', '$saldo', '$tipo', '$email')";
+      <label for="alquilado">alquilado:</label>
+      <select name="alquilado">
+        <option value="seleccione">seleccione</option>
+         <option value="si">si</option>
+         <option value="no">no</option>
+      </select><br><br>
 
-	if (mysqli_query($conn, $query)) {
-		echo "<div class='center-container'>
-                <h3>La cuenta ha sido creada.</h3>
-                <a href='login.html' class='login-button'>Inicio de sesión</a>
-              </div>";		
-		} else {
-			echo "Error: " . $query . "<br>" . mysqli_error($conn);
-		}	
-	
-	mysqli_close($conn);
-	?>
-</div>
+      <div class="buttons">
+        <input type="submit" value="Buscar">
+        <input type="reset" value="Borrar">
+    </div>
+   </form>
+   </div>
 
+<?php
+session_start();
 
-  </body>
-</html>
+$name = $_SESSION['name'];
+
+echo "<div class='welcome-container'>
+    <strong>¡Bienvenido!</strong> $name
+    <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
+    <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
+    </div>";	
+?>
+</BODY>
+</HTML>

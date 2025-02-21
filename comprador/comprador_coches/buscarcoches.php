@@ -1,6 +1,8 @@
-<!doctype html>
-<html lang="en">
-<HEAD>
+<?php
+session_start();
+?>
+<HTML LANG="es">
+    <HEAD>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>pruebas</title>
@@ -182,96 +184,145 @@
             .form-container .buttons input:hover {
                 background-color: #666;
             }
+            /* Estilos para la tabla */
+            table {
+                width: 80%;
+                margin: 20px auto;
+                border-collapse: collapse;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                background-color: #fff;
+            }
 
-            /* Estilo para el botón de inicio de sesión */
-            .login-button {
-                padding: 10px 20px;
-                background-color: #555;
+            th, td {
+                padding: 12px 15px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+
+            th {
+                background-color: #333;
                 color: #fff;
-                text-decoration: none;
-                border: 1px solid #444;
-                border-radius: 5px;
-                font-size: 1em;
-                cursor: pointer;
-                display: inline-block;
-                text-align: center;
             }
 
-            .login-button:hover {
-                background-color: #666;
+            tr:hover {
+                background-color: #f5f5f5;
             }
 
-            /* Contenedor para centrar el botón */
-            .center-container {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh; /* Ocupa toda la altura de la pantalla */
-                flex-direction: column;
-                text-align: center;
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+
+             /* Estilo para el contenedor de bienvenida */
+             .welcome-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #555;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            text-align: right;
+            }
+
+            .welcome-container a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9em;
+            }
+
+            .welcome-container a:hover {
+            text-decoration: underline;
             }
         </style>
-</HEAD>
-<body>
-<header>
-    <h1>Concesionario de Coches</h1>
-        <div class="header-buttons">
-            <a href="registro.html">Registro</a>
-            <a href="login.html">Inicio de sesión</a><!-- cambiar -->
-        </div>
-</header>
+    </HEAD>
+    <BODY>
+        <header>
+            <h1>Concesionario de Coches</h1>
+        </header>
         
-<nav>
-    <ul class="menu">
-        <!-- Menú principal horizontal -->
-        <li class="menu-item">
-            <a>Coches</a>
-            <ul class="submenu">
-                <li><a href="../index.html">Inicio</a></li>
-                <li><a href="../coches/listarcoches.php">Listar</a></li>
-                <li><a href="../coches/buscarcoches.html">Buscar</a></li>
+        <nav>
+            <ul class="menu">
+                <!-- Menú principal horizontal -->
+                <li class="menu-item">
+                    <a>Coches</a>
+                    <ul class="submenu">
+                        <li><a href="../index_comprador.php">Inicio</a></li>
+                        <li><a href="listarcoches.php">Listar</a></li>
+                        <li><a href="buscarcoches1.php">Buscar</a></li>
+                    </ul>
             </ul>
-        </li>
-    </ul>
-</nav>
+    </nav>
+    <H1>busqueda de coche</H1>
 
-<div class="container">
+    <?PHP
+        $name = $_SESSION['name'];
 
-	<?php
+        echo "<div class='welcome-container'>
+            <strong>¡Bienvenido!</strong> $name
+            <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
+            <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
+            </div>";	
 
-	include 'conn.php';
+       // Conectar con el servidor de base de datos
+          $conexion = mysqli_connect ("localhost", "root", "rootroot","concesionario")
+             or die ("No se puede conectar con el servidor");
+            
+       $modelo = $_REQUEST['modelo'];
+       $marca = $_REQUEST['marca'];
+       $color = $_REQUEST['color'];
+       $precio = $_REQUEST['precio'];
+       $alquilado = $_REQUEST['alquilado'];
+       $foto = $_REQUEST['foto'];
+    
+       // Enviar consulta
+          $instruccion = "select * from Coches where modelo='$modelo' or marca='$marca' or color='$color' or precio='$precio' or foto='$foto'";
+          $consulta = mysqli_query ($conexion,$instruccion)
+             or die ("Fallo en la consulta");
+          
+          $nfilas = mysqli_num_rows ($consulta);
+          if ($nfilas > 0)
+          {
+             print ("<TABLE>\n");
+             print ("<TR>\n");
+             print ("<TH>modelo</TH>\n");
+             print ("<TH>marca</TH>\n");
+             print ("<TH>color</TH>\n");
+             print ("<TH>precio</TH>\n");
+             print ("<TH>alquilado</TH>\n");
+             print ("<TH>foto</TH>\n");
+             print ("</TR>\n");
+    
+             for ($i=0; $i<$nfilas; $i++)
+             {
+                $resultado = mysqli_fetch_array ($consulta);
+                print ("<TR>\n");
+                print ("<TD>" . $resultado['modelo'] . "</TD>\n");
+                print ("<TD>" . $resultado['marca'] . "</TD>\n");
+                print ("<TD>" . $resultado['color'] . "</TD>\n");
+                print ("<TD>" . $resultado['precio'] . "</TD>\n");
+                print ("<TD>" . $resultado['alquilado'] . "</TD>\n");
+                print ("<TD> <img src='" . $resultado['foto'] . "' width=80px></TD>\n");
 
-	$conn = mysqli_connect("localhost", "root", "rootroot", "concesionario");
-
-	// Check connection
-	if (!$conn) {
-		die("Connection failed: " . mysqli_connect_error());
-	}
-	
-		
-	$nombre = $_POST['nombre'];
-	$apellidos = $_POST['apellidos'];
-    $email = $_POST['email'];
-	$hash= $_POST['contrasena'];
-    $dni = $_POST['dni'];
-    $saldo = $_POST['saldo'];
-    $tipo = $_POST['tipo'];
-	$contrasena_encriptada = password_hash($hash, PASSWORD_DEFAULT);
-	$query = "INSERT INTO usuarios (password, name, apellidos, dni, saldo, tipo, email) VALUES ('$contrasena_encriptada', '$nombre', '$apellidos', '$dni', '$saldo', '$tipo', '$email')";
-
-	if (mysqli_query($conn, $query)) {
-		echo "<div class='center-container'>
-                <h3>La cuenta ha sido creada.</h3>
-                <a href='login.html' class='login-button'>Inicio de sesión</a>
-              </div>";		
-		} else {
-			echo "Error: " . $query . "<br>" . mysqli_error($conn);
-		}	
-	
-	mysqli_close($conn);
-	?>
-</div>
-
-
-  </body>
-</html>
+    
+                
+                print ("</TR>\n");
+             }
+    
+             print ("</TABLE>\n");
+          }
+          else {
+             print ("No hay noticias que coincidan");
+          }
+          
+    
+    // Cerrar 
+    mysqli_close ($conexion);
+    
+    ?>
+    
+    </BODY>
+    </HTML>
+    
+</BODY>
+</HTML>
