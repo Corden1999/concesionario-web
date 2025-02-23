@@ -182,6 +182,33 @@ session_start();
             .welcome-container a:hover {
             text-decoration: underline;
             }
+            table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
         </style>
     </HEAD>
     <BODY>
@@ -213,19 +240,6 @@ session_start();
                 </li>
             </ul>
         </nav>
-
-<div class="form-container"> 
-  <h2>Actualizar coche por ID</h2>
-  <form action="modificarcoches.php" method="post">
-    <label for="id_coche">Id del coche que se quiere actualizar:</label>
-    <input type="text" name="id_coche" required><br>
-    <div class="buttons">
-        <input type="submit" value="Actualizar">
-        <input type="reset" value="Borrar">
-    </div>
-  </form>
-  </div>
-
 </body>
 <?php
 
@@ -236,6 +250,57 @@ echo "<div class='welcome-container'>
     <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
     <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
     </div>";	
+// Conectar con el servidor de base de datos
+$conexion = mysqli_connect("localhost", "root", "rootroot")
+    or die("No se puede conectar con el servidor");
+
+// Seleccionar base de datos
+mysqli_select_db($conexion, "concesionario")
+    or die("No se puede seleccionar la base de datos");
+
+// Enviar consulta
+$id_vendedor = $_SESSION['id_usuario'];
+$instruccion = "SELECT * FROM coches where id_usuario=$id_vendedor"; // Corregido el nombre de la tabla
+$consulta = mysqli_query($conexion, $instruccion)
+    or die("Fallo en la consulta");
+
+// Mostrar resultados de la consulta
+$nfilas = mysqli_num_rows($consulta);
+if ($nfilas > 0) {
+    print("<TABLE>\n");
+    print("<TR>\n");
+    print("<TH>Modelo</TH>\n");
+    print("<TH>Marca</TH>\n");
+    print("<TH>Color</TH>\n");
+    print("<TH>Precio</TH>\n");
+    print("<TH>Alquilado</TH>\n");
+    print("<TH>Foto</TH>\n");
+    print("<TH>Acción</TH>\n");
+    print("</TR>\n");
+
+    for ($i = 0; $i < $nfilas; $i++) {
+        $resultado = mysqli_fetch_array($consulta);
+        print("<TR>\n");
+        print("<TD>" . $resultado['modelo'] . "</TD>\n");
+        print("<TD>" . $resultado['marca'] . "</TD>\n");
+        print("<TD>" . $resultado['color'] . "</TD>\n");
+        print("<TD>" . $resultado['precio'] . "</TD>\n");
+        print("<TD>" . $resultado['alquilado'] . "</TD>\n");
+        print("<TD><img src='" . $resultado['foto'] . "' width='80px'></TD>\n");
+            print("<TD><form action='modificarcoches.php' method='post'>");
+            print("<input type='hidden' name='coche_id' value='" . $resultado['id_coche'] . "'>"); // Corregido el nombre de la columna
+            print("<input type='submit' value='actualizar'>");
+            print("</form></TD>\n");
+        print("</TR>\n");
+    }
+
+    print("</TABLE>\n");
+} else {
+    print("No hay coches disponibles");
+}
+
+// Cerrar conexión
+mysqli_close($conexion);
 ?>
 
 

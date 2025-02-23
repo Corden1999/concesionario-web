@@ -224,6 +224,7 @@ session_start();
                         <li><a href="index_comprador.php">Inicio</a></li>
                         <li><a href="./comprador_coches/listarcoches.php">Listar</a></li>
                         <li><a href="./comprador_coches/buscarcoches1.php">Buscar</a></li>
+                        <li><a href="./comprador_coches/devolvercoches.php">Devolver</a></li>
                     </ul>
             </ul>
         </nav>

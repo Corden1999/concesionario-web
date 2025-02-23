@@ -214,7 +214,9 @@ session_start();
                 </li>
             </ul>
         </nav>
-<?php
+        <?php
+session_start(); // Iniciar sesión
+
 $name = $_SESSION['name'];
 
 echo "<div class='welcome-container'>
@@ -222,7 +224,6 @@ echo "<div class='welcome-container'>
     <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
     <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
     </div>";	
-
 
 // Configuración de la base de datos
 $servername = "localhost";
@@ -235,7 +236,7 @@ $conn = mysqli_connect($servername, $username, $password, $dbname)
 or  die("Conexión fallida: " . mysqli_connect_error());
 
 // Recuperar el ID del formulario
-$id_coche = $_POST['id_coche'];
+$id_coche = $_POST['coche_id'];
 
 $sql = "SELECT * FROM Coches WHERE id_coche = '$id_coche'";
 $result = mysqli_query($conn, $sql);

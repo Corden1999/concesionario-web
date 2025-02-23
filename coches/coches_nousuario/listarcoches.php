@@ -213,89 +213,77 @@
         }
     </style>
 </HEAD>
-    <BODY>
-        <header>
-            <h1>Concesionario de Coches</h1>
-            
-        </header>
+<BODY>
+    <header>
+        <h1>Concesionario de Coches</h1>
+        <div class="header-buttons">
+            <a href="../../sesion_registro/registro.html">Registro</a>
+            <a href="../../sesion_registro/login.html">Inicio de sesión</a>
+        </div>
+    </header>
+    
+    <nav>
+        <ul class="menu">
+            <!-- Menú principal horizontal -->
+            <li class="menu-item">
+                <a>Coches</a>
+                <ul class="submenu">
+                    <li><a href="../../index.html">Inicio</a></li>
+                    <li><a href="listarcoches.php">Listar</a></li>
+                    <li><a href="buscarcoches.html">Buscar</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <H1>Listar Coches</H1>
+
+    <?PHP
+        // Conectar con el servidor de base de datos
+        $conexion = mysqli_connect ("localhost", "root", "rootroot")
+            or die ("No se puede conectar con el servidor");
         
-        <nav>
-            <ul class="menu">
-                <!-- Menú principal horizontal -->
-                <li class="menu-item">
-                    <a>Coches</a>
-                    <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="añadircoches.html">Añadir</a></li>
-                        <li><a href="listarcoches.php">Listar</a></li>
-                        <li><a href="buscarcoches.html">Buscar</a></li>
-                        <li><a href="modificarcoches.html">Modificar</a></li>
-                        <li><a href="borrarcoches.php">Borrar</a></li>
-                    </ul>
-                </li>
-                <li class="menu-item">
-                    <a>Usuarios</a>
-                    <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="../usuarios/añadirusuarios.html">Añadir</a></li>
-                        <li><a href="../usuarios/listarusuarios.php">Listar</a></li>
-                        <li><a href="../usuarios/buscarusuarios.html">Buscar</a></li>
-                        <li><a href="../usuarios/modificarusuarios.html">Modificar</a></li>
-                        <li><a href="../usuarios/borrarusuarios.php">Borrar</a></li>
-                    </ul>
-                </li>
-                <li class="menu-item">
-                    <a>Alquileres</a>
-                    <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="../alquileres/listaralquileres.php">Listar</a></li>
-                        <li><a href="../alquileres/borraralquileres.php">Borrar</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
+        // Seleccionar base de datos
+        mysqli_select_db ($conexion,"concesionario")
+            or die ("No se puede seleccionar la base de datos");
+        
+        // Enviar consulta
+        $instruccion = "select * from Coches";
+        $consulta = mysqli_query ($conexion,$instruccion)
+            or die ("Fallo en la consulta");
+        
+        // Mostrar resultados de la consulta
+        $nfilas = mysqli_num_rows ($consulta);
+        if ($nfilas > 0) {
+            print ("<TABLE>\n");
+            print ("<TR>\n");
+            print ("<TH>Modelo</TH>\n");
+            print ("<TH>Marca</TH>\n");
+            print ("<TH>Color</TH>\n");
+            print ("<TH>Precio</TH>\n");
+            print ("<TH>Alquilado</TH>\n");
+            print ("<TH>Foto</TH>\n");
+            print ("</TR>\n");
 
-    <?php
-$conn = mysqli_connect("localhost", "root", "rootroot", "concesionario");
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-$sql = "SELECT id_coche, modelo, marca, color, precio, alquilado, foto FROM coches";
-$result = mysqli_query($conn, $sql);
-if (mysqli_num_rows($result) > 0) {
-    echo "<h1>Borrado de coches</h1>";
-    echo "<form action='borrarcoches2.php' method='post'>";
-    echo "<table border='1'>";
-    echo "<tr><th>Seleccionar</th><th>Modelo</th><th>Marca</th><th>Color</th><th>Precio</th><th>Alquilado</th><th>Foto</th></tr>";
-    // Mostrar cada piso con su checkbox
-    while ($row = mysqli_fetch_assoc($result)) {
-        echo "<tr>";
-        echo "<td><input type='checkbox' name='delete_ids[]' value='" . $row['id_coche'] . "'></td>";
-        echo "<td>" . htmlspecialchars($row['modelo']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['marca']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['color']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['precio']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['alquilado']) . "</td>";
-        echo "<td><img src='" . htmlspecialchars($row['foto']) . "' width=80px></td>";
-        echo "</tr>";
-    }
-    echo "</table>";
-    echo "<br>";
-    echo "<div style='text-align: center; margin-top: 20px;'>";
-    echo "<button type='submit' style='padding: 10px 20px; background-color: #555; color: #fff; border: 1px solid #444; border-radius: 5px; cursor: pointer; font-size: 1em;'>Eliminar seleccionados</button>";
-    echo "</div>";
-    echo "</form>";
-} else {
-    echo "<h1>No hay coches disponibles</h1>";
-}
+            for ($i=0; $i<$nfilas; $i++) {
+                $resultado = mysqli_fetch_array ($consulta);
+                print ("<TR>\n");
+                print ("<TD>" . $resultado['modelo'] . "</TD>\n");
+                print ("<TD>" . $resultado['marca'] . "</TD>\n");
+                print ("<TD>" . $resultado['color'] . "</TD>\n");
+                print ("<TD>" . $resultado['precio'] . "</TD>\n");
+                print ("<TD>" . $resultado['alquilado'] . "</TD>\n");
+                print ("<TD><img src='" . $resultado['foto'] . "' width='80px'></TD>\n");
+                print ("</TR>\n");
+            }
 
-// Cerrar conexión
-mysqli_close($conn);
-?>
+            print ("</TABLE>\n");
+        } else {
+            print ("No hay coches disponibles");
+        }
 
-  
-
-</body>
-
-
-</html>
+        // Cerrar conexión
+        mysqli_close ($conexion);
+    ?>
+</BODY>
+</HTML>

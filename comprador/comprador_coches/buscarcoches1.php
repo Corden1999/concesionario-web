@@ -236,6 +236,7 @@ session_start();
                         <li><a href="../index_comprador.php">Inicio</a></li>
                         <li><a href="listarcoches.php">Listar</a></li>
                         <li><a href="buscarcoches1.php">Buscar</a></li>
+                        <li><a href="devolvercoches.php">Devolver</a></li>
                     </ul>
             </ul>
     </nav>

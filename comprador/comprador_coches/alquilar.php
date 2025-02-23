@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <HTML LANG="es">
 <HEAD>
@@ -183,6 +186,28 @@
             background-color: #666;
         }
 
+        /* Estilo para el contenedor de bienvenida */
+        .welcome-container {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background-color: #555;
+        padding: 10px;
+        border-radius: 5px;
+        color: #fff;
+        text-align: right;
+        }
+
+        .welcome-container a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 0.9em;
+        }
+
+        .welcome-container a:hover {
+        text-decoration: underline;
+        }
+
         /* Estilos para la tabla */
         table {
             width: 80%;
@@ -213,88 +238,93 @@
         }
     </style>
 </HEAD>
-    <BODY>
-        <header>
-            <h1>Concesionario de Coches</h1>
-            
-        </header>
-        
-        <nav>
+<BODY>
+    <header>
+        <h1>Concesionario de Coches</h1>
+    </header>
+    
+    <nav>
             <ul class="menu">
                 <!-- Menú principal horizontal -->
                 <li class="menu-item">
                     <a>Coches</a>
                     <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="../coches/añadircoches.html">Añadir</a></li>
-                        <li><a href="../coches/listarcoches.php">Listar</a></li>
-                        <li><a href="../coches/buscarcoches.html">Buscar</a></li>
-                        <li><a href="../coches/modificarcoches.html">Modificar</a></li>
-                        <li><a href="../coches/borrarcoches.php">Borrar</a></li>
+                        <li><a href="../index_comprador.php">Inicio</a></li>
+                        <li><a href="listarcoches.php">Listar</a></li>
+                        <li><a href="buscarcoches1.php">Buscar</a></li>
+                        <li><a href="devolvercoches.php">Devolver</a></li>
                     </ul>
-                </li>
-                <li class="menu-item">
-                    <a>Usuarios</a>
-                    <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="../usuarios/añadirusuarios.html">Añadir</a></li>
-                        <li><a href="../usuarios/listarusuarios.php">Listar</a></li>
-                        <li><a href="../usuarios/buscarusuarios.html">Buscar</a></li>
-                        <li><a href="../usuarios/modificarusuarios.html">Modificar</a></li>
-                        <li><a href="../usuarios/borrarusuarios.php">Borrar</a></li>
-                    </ul>
-                </li>
-                <li class="menu-item">
-                    <a>Alquileres</a>
-                    <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="listaralquileres.php">Listar</a></li>
-                        <li><a href="borraralquileres.php">Borrar</a></li>
-                    </ul>
-                </li>
             </ul>
-        </nav>
+    </nav>
+
+    <H1>alquilar coche</H1>
 
     <?php
-$conn = mysqli_connect("localhost", "root", "rootroot", "concesionario");
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+session_start(); // Iniciar sesión
+
+$name = $_SESSION['name'];
+
+echo "<div class='welcome-container'>
+    <strong>¡Bienvenido!</strong> $name
+    <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
+    <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
+    </div>";	
+
+// Verificar si el usuario está logueado
+if (!isset($_SESSION['id_usuario'])) {
+    die("Usuario no logueado.");
 }
-$sql = "SELECT id_alquiler, id_usuario, id_coche, prestado, devuelto FROM alquileres";
-$result = mysqli_query($conn, $sql);
-if (mysqli_num_rows($result) > 0) {
-    echo "<h1>Borrado de coches</h1>";
-    echo "<form action='borrarcoches2.php' method='post'>";
-    echo "<table border='1'>";
-    echo "<tr><th>Seleccionar</th><th>id_alquiler</th><th>id_usuario</th><th>id_coche</th><th>Prestado</th><th>Devuelto</th></tr>";
-    // Mostrar cada piso con su checkbox
-    while ($row = mysqli_fetch_assoc($result)) {
-        echo "<tr>";
-        echo "<td><input type='checkbox' name='delete_ids[]' value='" . $row['id_alquiler'] . "'></td>";
-        echo "<td>" . htmlspecialchars($row['id_alquiler']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['id_usuario']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['id_coche']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['prestado']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['devuelto']) . "</td>";
-        echo "</tr>";
+
+// Verificar si se ha enviado el formulario
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $coche_id = $_POST['coche_id'];
+
+    // Conectar con el servidor de base de datos
+    $conexion = mysqli_connect("localhost", "root", "rootroot")
+        or die("No se puede conectar con el servidor");
+
+    // Seleccionar base de datos
+    mysqli_select_db($conexion, "concesionario")
+        or die("No se puede seleccionar la base de datos");
+
+    // Obtener información del coche
+    $instruccion = "SELECT * FROM coches WHERE id_coche = $coche_id"; // 
+    $consulta = mysqli_query($conexion, $instruccion)
+        or die("Fallo en la consulta del coche");
+
+    $coche = mysqli_fetch_assoc($consulta);
+
+    // Obtener información del usuario
+    $id_usuario = $_SESSION['id_usuario'];
+    $instruccion = "SELECT * FROM usuarios WHERE id_usuario = $id_usuario";
+    $consulta = mysqli_query($conexion, $instruccion)
+        or die("Fallo en la consulta del usuario");
+
+    $usuario = mysqli_fetch_assoc($consulta);
+
+    // Verificar si el usuario es comprador y tiene saldo suficiente
+    if ($usuario['tipo'] == 'comprador' && $usuario['saldo'] >= $coche['precio']) {
+        // Actualizar el estado del coche a "alquilado" y asignar el id_comprador
+        $instruccion = "UPDATE coches SET alquilado = 'si', id_comprador = $id_usuario WHERE id_coche = $coche_id"; // Corregido el nombre de la tabla y columna
+        mysqli_query($conexion, $instruccion)
+            or die("Fallo en la actualización del coche");
+
+        // Restar el precio del coche al saldo del usuario
+        $nuevo_saldo = $usuario['saldo'] - $coche['precio'];
+        $instruccion = "UPDATE usuarios SET saldo = $nuevo_saldo WHERE id_usuario = $id_usuario";
+        mysqli_query($conexion, $instruccion)
+            or die("Fallo en la actualización del saldo");
+
+        echo "Coche alquilado con éxito!";
+    } else {
+        echo "Usted no puede alquilar, saldo insuficiente o usuario no permitido.";
     }
-    echo "</table>";
-    echo "<br>";
-    echo "<div style='text-align: center; margin-top: 20px;'>";
-    echo "<button type='submit' style='padding: 10px 20px; background-color: #555; color: #fff; border: 1px solid #444; border-radius: 5px; cursor: pointer; font-size: 1em;'>Eliminar seleccionados</button>";
-    echo "</div>";
-    echo "</form>";
+
+    // Cerrar conexión
+    mysqli_close($conexion);
 } else {
-    echo "<h1>No hay coches disponibles</h1>";
+    echo "Método no permitido.";
 }
-
-// Cerrar conexión
-mysqli_close($conn);
 ?>
-
-  
-
-</body>
-
-
-</html>
+</BODY>
+</HTML>

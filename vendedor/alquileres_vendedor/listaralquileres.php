@@ -285,7 +285,8 @@ session_start();
             or die ("No se puede seleccionar la base de datos");
         
         // Enviar consulta
-        $instruccion = "select * from alquileres";
+        $id_usuario = $_SESSION['id_usuario'];
+        $instruccion = "select modelo, marca, color, precio, alquilado, foto from coches where id_usuario='$id_usuario'";
         $consulta = mysqli_query ($conexion,$instruccion)
             or die ("Fallo en la consulta");
         
@@ -294,21 +295,23 @@ session_start();
         if ($nfilas > 0) {
             print ("<TABLE>\n");
             print ("<TR>\n");
-            print ("<TH>id_alquiler</TH>\n");
-            print ("<TH>id_usuario</TH>\n");
-            print ("<TH>id_coche</TH>\n");
-            print ("<TH>prestado</TH>\n");
-            print ("<TH>devuelto</TH>\n");
+            print ("<TH>modelo</TH>\n");
+            print ("<TH>marca</TH>\n");
+            print ("<TH>color</TH>\n");
+            print ("<TH>precio</TH>\n");
+            print ("<TH>alquilado</TH>\n");
+            print ("<TH>foto</TH>\n");
             print ("</TR>\n");
 
             for ($i=0; $i<$nfilas; $i++) {
                 $resultado = mysqli_fetch_array ($consulta);
                 print ("<TR>\n");
-                print ("<TD>" . $resultado['id_alquiler'] . "</TD>\n");
-                print ("<TD>" . $resultado['id_usuario'] . "</TD>\n");
-                print ("<TD>" . $resultado['id_coche'] . "</TD>\n");
-                print ("<TD>" . $resultado['prestado'] . "</TD>\n");
-                print ("<TD>" . $resultado['devuelto'] . "</TD>\n");
+                print ("<TD>" . $resultado['modelo'] . "</TD>\n");
+                print ("<TD>" . $resultado['marca'] . "</TD>\n");
+                print ("<TD>" . $resultado['color'] . "</TD>\n");
+                print ("<TD>" . $resultado['precio'] . "</TD>\n");
+                print ("<TD>" . $resultado['alquilado'] . "</TD>\n");
+                print ("<TD><img src='" . $resultado['foto'] . "' width='80px'></TD>\n");
                 print ("</TR>\n");
             }
 

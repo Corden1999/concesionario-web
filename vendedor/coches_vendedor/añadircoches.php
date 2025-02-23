@@ -268,7 +268,14 @@ session_start();
 
 <H2>insercion de coche</H2>
 
-<?PHP
+<?php
+session_start();
+
+// Verificar si el usuario ha iniciado sesión
+if (!isset($_SESSION['loggedin'])) {
+    header("Location: ../../sesion_registro/login.html");
+    exit();
+}
 
 $name = $_SESSION['name'];
 
@@ -278,60 +285,58 @@ echo "<div class='welcome-container'>
     <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
     </div>";	
 
-   // Conectar con el servidor de base de datos
-      $conexion = mysqli_connect ("localhost", "root", "rootroot","concesionario")
-         or die ("No se puede conectar con el servidor");
-		
-   $modelo = $_REQUEST['modelo'];
-   $marca = $_REQUEST['marca'];
-   $color = $_REQUEST['color'];
-   $precio = $_REQUEST['precio'];
-   $alquilado = $_REQUEST['alquilado'];
-   $target_dir = "../../img/";
+// Conectar con el servidor de base de datos
+$conexion = mysqli_connect("localhost", "root", "rootroot", "concesionario")
+    or die("No se puede conectar con el servidor");
+
+// Obtener datos del formulario
+$modelo = $_POST['modelo'];
+$marca = $_POST['marca'];
+$color = $_POST['color'];
+$precio = $_POST['precio'];
+$alquilado = $_POST['alquilado'];
+$target_dir = "../../img/";
 
 // Verificar si se envió un archivo
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['image'])) {
-$file = $_FILES['image'];
+    $file = $_FILES['image'];
 
-// Obtener el nombre y ruta del archivo destino
-$target_file = $target_dir . basename($file["name"]);
+    // Obtener el nombre y ruta del archivo destino
+    $target_file = $target_dir . basename($file["name"]);
 
-// Verificar si el archivo es realmente una imagen
-$check = getimagesize($file["tmp_name"]);
-if ($check === false) {
-    die("El archivo seleccionado no es una imagen.");
-}
+    // Verificar si el archivo es realmente una imagen
+    $check = getimagesize($file["tmp_name"]);
+    if ($check === false) {
+        die("El archivo seleccionado no es una imagen.");
+    }
 
-// Verificar si el archivo ya existe
-if (file_exists($target_file)) {
-    die("El archivo ya existe en el servidor.");
-}
+    // Verificar si el archivo ya existe
+    if (file_exists($target_file)) {
+        die("El archivo ya existe en el servidor.");
+    }
 
-// Intentar mover el archivo al directorio de destino
-if (move_uploaded_file($file["tmp_name"], $target_file)) {
-    echo "La imagen " . htmlspecialchars(basename($file["name"])) . " se ha subido correctamente.";
-} else {
-    echo "Hubo un error al subir el archivo.";
-}
+    // Intentar mover el archivo al directorio de destino
+    if (move_uploaded_file($file["tmp_name"], $target_file)) {
+        echo "La imagen " . htmlspecialchars(basename($file["name"])) . " se ha subido correctamente.";
+    } else {
+        echo "Hubo un error al subir el archivo.";
+    }
 } else {
     echo "No se ha seleccionado ningún archivo.";
-}  
-   // Enviar consulta
-      $instruccion = "insert into Coches (modelo, marca, color, precio, alquilado, foto) values ('$modelo', '$marca', '$color', '$precio', '$alquilado', '$target_file')";
-      
-      if (mysqli_query ($conexion,$instruccion)) {
-         echo "coche insertado con exito";
-      }
-      else{
-         echo "Error al insertar coche" . mysqli_error($conexion);
-      }
+}
 
-    
-// Cerrar 
-mysqli_close ($conexion);
+// Enviar consulta
+$id_usuario = $_SESSION['id_usuario'];
+$instruccion = "INSERT INTO Coches (modelo, marca, color, precio, alquilado, foto, id_usuario) VALUES ('$modelo', '$marca', '$color', '$precio', '$alquilado', '$target_file', '$id_usuario')";
 
+if (mysqli_query($conexion, $instruccion)) {
+    echo "Coche insertado con éxito.";
+} else {
+    echo "Error al insertar coche: " . mysqli_error($conexion);
+}
 
-
+// Cerrar la conexión
+mysqli_close($conexion);
 ?>
 
 </BODY>

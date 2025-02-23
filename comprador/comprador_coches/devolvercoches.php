@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <HTML LANG="es">
 <HEAD>
@@ -183,6 +186,28 @@
             background-color: #666;
         }
 
+        /* Estilo para el contenedor de bienvenida */
+        .welcome-container {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background-color: #555;
+        padding: 10px;
+        border-radius: 5px;
+        color: #fff;
+        text-align: right;
+        }
+
+        .welcome-container a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 0.9em;
+        }
+
+        .welcome-container a:hover {
+        text-decoration: underline;
+        }
+
         /* Estilos para la tabla */
         table {
             width: 80%;
@@ -216,74 +241,86 @@
 <BODY>
     <header>
         <h1>Concesionario de Coches</h1>
-        <div class="header-buttons">
-            <a href="../sesion_registro/registro.html">Registro</a>
-            <a href="../sesion_registro/login.html">Inicio de sesión</a>
-        </div>
     </header>
     
     <nav>
-        <ul class="menu">
-            <!-- Menú principal horizontal -->
-            <li class="menu-item">
-                <a>Coches</a>
-                <ul class="submenu">
-                    <li><a href="../index.html">Inicio</a></li>
-                    <li><a href="../coches/listarcoches.php">Listar</a></li>
-                    <li><a href="../coches/buscarcoches.html">Buscar</a></li>
-                </ul>
-            </li>
-        </ul>
+            <ul class="menu">
+                <!-- Menú principal horizontal -->
+                <li class="menu-item">
+                    <a>Coches</a>
+                    <ul class="submenu">
+                        <li><a href="../index_comprador.php">Inicio</a></li>
+                        <li><a href="listarcoches.php">Listar</a></li>
+                        <li><a href="buscarcoches1.php">Buscar</a></li>
+                        <li><a href="devolvercoches.php">Devolver</a></li>
+                    </ul>
+            </ul>
     </nav>
 
     <H1>Listar Coches</H1>
 
-    <?PHP
-        // Conectar con el servidor de base de datos
-        $conexion = mysqli_connect ("localhost", "root", "rootroot")
-            or die ("No se puede conectar con el servidor");
-        
-        // Seleccionar base de datos
-        mysqli_select_db ($conexion,"concesionario")
-            or die ("No se puede seleccionar la base de datos");
-        
-        // Enviar consulta
-        $instruccion = "select * from Coches";
-        $consulta = mysqli_query ($conexion,$instruccion)
-            or die ("Fallo en la consulta");
-        
-        // Mostrar resultados de la consulta
-        $nfilas = mysqli_num_rows ($consulta);
-        if ($nfilas > 0) {
-            print ("<TABLE>\n");
-            print ("<TR>\n");
-            print ("<TH>Modelo</TH>\n");
-            print ("<TH>Marca</TH>\n");
-            print ("<TH>Color</TH>\n");
-            print ("<TH>Precio</TH>\n");
-            print ("<TH>Alquilado</TH>\n");
-            print ("<TH>Foto</TH>\n");
-            print ("</TR>\n");
+    <?php
+session_start(); // Iniciar sesión
 
-            for ($i=0; $i<$nfilas; $i++) {
-                $resultado = mysqli_fetch_array ($consulta);
-                print ("<TR>\n");
-                print ("<TD>" . $resultado['modelo'] . "</TD>\n");
-                print ("<TD>" . $resultado['marca'] . "</TD>\n");
-                print ("<TD>" . $resultado['color'] . "</TD>\n");
-                print ("<TD>" . $resultado['precio'] . "</TD>\n");
-                print ("<TD>" . $resultado['alquilado'] . "</TD>\n");
-                print ("<TD><img src='" . $resultado['foto'] . "' width='80px'></TD>\n");
-                print ("</TR>\n");
-            }
+$name = $_SESSION['name'];
 
-            print ("</TABLE>\n");
-        } else {
-            print ("No hay coches disponibles");
-        }
+echo "<div class='welcome-container'>
+    <strong>¡Bienvenido!</strong> $name
+    <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
+    <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
+    </div>";	
 
-        // Cerrar conexión
-        mysqli_close ($conexion);
-    ?>
+// Conectar con el servidor de base de datos
+$conexion = mysqli_connect("localhost", "root", "rootroot")
+    or die("No se puede conectar con el servidor");
+
+// Seleccionar base de datos
+mysqli_select_db($conexion, "concesionario")
+    or die("No se puede seleccionar la base de datos");
+
+// Enviar consulta
+$id_comprador = $_SESSION['id_usuario'];
+$instruccion = "SELECT * FROM coches where id_comprador=$id_comprador"; // Corregido el nombre de la tabla
+$consulta = mysqli_query($conexion, $instruccion)
+    or die("Fallo en la consulta");
+
+// Mostrar resultados de la consulta
+$nfilas = mysqli_num_rows($consulta);
+if ($nfilas > 0) {
+    print("<TABLE>\n");
+    print("<TR>\n");
+    print("<TH>Modelo</TH>\n");
+    print("<TH>Marca</TH>\n");
+    print("<TH>Color</TH>\n");
+    print("<TH>Precio</TH>\n");
+    print("<TH>Alquilado</TH>\n");
+    print("<TH>Foto</TH>\n");
+    print("<TH>Acción</TH>\n");
+    print("</TR>\n");
+
+    for ($i = 0; $i < $nfilas; $i++) {
+        $resultado = mysqli_fetch_array($consulta);
+        print("<TR>\n");
+        print("<TD>" . $resultado['modelo'] . "</TD>\n");
+        print("<TD>" . $resultado['marca'] . "</TD>\n");
+        print("<TD>" . $resultado['color'] . "</TD>\n");
+        print("<TD>" . $resultado['precio'] . "</TD>\n");
+        print("<TD>" . $resultado['alquilado'] . "</TD>\n");
+        print("<TD><img src='" . $resultado['foto'] . "' width='80px'></TD>\n");
+            print("<TD><form action='devolvercoches2.php' method='post'>");
+            print("<input type='hidden' name='coche_id' value='" . $resultado['id_coche'] . "'>"); // Corregido el nombre de la columna
+            print("<input type='submit' value='devolver'>");
+            print("</form></TD>\n");
+        print("</TR>\n");
+    }
+
+    print("</TABLE>\n");
+} else {
+    print("No hay coches disponibles");
+}
+
+// Cerrar conexión
+mysqli_close($conexion);
+?>
 </BODY>
 </HTML>

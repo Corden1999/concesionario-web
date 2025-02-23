@@ -282,23 +282,25 @@ $conn = mysqli_connect("localhost", "root", "rootroot", "concesionario");
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
-$sql = "SELECT id_alquiler, id_usuario, id_coche, prestado, devuelto FROM alquileres";
+$id_usuario = $_SESSION['id_usuario'];
+$sql = "SELECT modelo, marca, color, precio, alquilado, foto FROM coches WHERE id_usuario = '$id_usuario'";
 $result = mysqli_query($conn, $sql);
 if (mysqli_num_rows($result) > 0) {
     echo "<h1>Borrado de coches</h1>";
-    echo "<form action='borrarcoches2.php' method='post'>";
+    echo "<form action='borraralquileres2.php' method='post'>";
     echo "<table border='1'>";
-    echo "<tr><th>Seleccionar</th><th>id_alquiler</th><th>id_usuario</th><th>id_coche</th><th>Prestado</th><th>Devuelto</th></tr>";
+    echo "<tr><th>Seleccionar</th><th>modelo</th><th>marca</th><th>color</th><th>precio</th><th>alquilado</th><th>foto</th></tr>";
     // Mostrar cada piso con su checkbox
     while ($row = mysqli_fetch_assoc($result)) {
-        echo "<tr>";
+        print ("<TR>\n");
         echo "<td><input type='checkbox' name='delete_ids[]' value='" . $row['id_alquiler'] . "'></td>";
-        echo "<td>" . htmlspecialchars($row['id_alquiler']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['id_usuario']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['id_coche']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['prestado']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['devuelto']) . "</td>";
-        echo "</tr>";
+        echo "<td>" . htmlspecialchars($row['modelo']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['marca']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['color']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['precio']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['alquilado']) . "</td>";
+        print ("<TD><img src='" . $row['foto'] . "' width='80px'></TD>\n");
+        print ("</TR>\n");
     }
     echo "</table>";
     echo "<br>";

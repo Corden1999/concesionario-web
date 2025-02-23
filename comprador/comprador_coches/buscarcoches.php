@@ -250,79 +250,72 @@ session_start();
                         <li><a href="../index_comprador.php">Inicio</a></li>
                         <li><a href="listarcoches.php">Listar</a></li>
                         <li><a href="buscarcoches1.php">Buscar</a></li>
+                        <li><a href="devolvercoches.php">Devolver</a></li>
                     </ul>
             </ul>
     </nav>
     <H1>busqueda de coche</H1>
 
-    <?PHP
-        $name = $_SESSION['name'];
+    <?php
+// Conectar con el servidor de base de datos
+$conexion = mysqli_connect("localhost", "root", "rootroot", "concesionario")
+    or die("No se puede conectar con el servidor");
 
-        echo "<div class='welcome-container'>
-            <strong>¡Bienvenido!</strong> $name
-            <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
-            <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
-            </div>";	
+// Recoger los valores del formulario
+$modelo = $_REQUEST['modelo'];
+$marca = $_REQUEST['marca'];
+$color = $_REQUEST['color'];
+$precio = $_REQUEST['precio'];
+$alquilado = $_REQUEST['alquilado'];
 
-       // Conectar con el servidor de base de datos
-          $conexion = mysqli_connect ("localhost", "root", "rootroot","concesionario")
-             or die ("No se puede conectar con el servidor");
-            
-       $modelo = $_REQUEST['modelo'];
-       $marca = $_REQUEST['marca'];
-       $color = $_REQUEST['color'];
-       $precio = $_REQUEST['precio'];
-       $alquilado = $_REQUEST['alquilado'];
-       $foto = $_REQUEST['foto'];
-    
-       // Enviar consulta
-          $instruccion = "select * from Coches where modelo='$modelo' or marca='$marca' or color='$color' or precio='$precio' or foto='$foto'";
-          $consulta = mysqli_query ($conexion,$instruccion)
-             or die ("Fallo en la consulta");
-          
-          $nfilas = mysqli_num_rows ($consulta);
-          if ($nfilas > 0)
-          {
-             print ("<TABLE>\n");
-             print ("<TR>\n");
-             print ("<TH>modelo</TH>\n");
-             print ("<TH>marca</TH>\n");
-             print ("<TH>color</TH>\n");
-             print ("<TH>precio</TH>\n");
-             print ("<TH>alquilado</TH>\n");
-             print ("<TH>foto</TH>\n");
-             print ("</TR>\n");
-    
-             for ($i=0; $i<$nfilas; $i++)
-             {
-                $resultado = mysqli_fetch_array ($consulta);
-                print ("<TR>\n");
-                print ("<TD>" . $resultado['modelo'] . "</TD>\n");
-                print ("<TD>" . $resultado['marca'] . "</TD>\n");
-                print ("<TD>" . $resultado['color'] . "</TD>\n");
-                print ("<TD>" . $resultado['precio'] . "</TD>\n");
-                print ("<TD>" . $resultado['alquilado'] . "</TD>\n");
-                print ("<TD> <img src='" . $resultado['foto'] . "' width=80px></TD>\n");
+// Enviar consulta
+$instruccion = "SELECT * FROM coches WHERE modelo='$modelo' OR marca='$marca' OR color='$color' OR precio='$precio' OR alquilado='$alquilado'";
+$consulta = mysqli_query($conexion, $instruccion)
+    or die("Fallo en la consulta");
 
-    
-                
-                print ("</TR>\n");
-             }
-    
-             print ("</TABLE>\n");
-          }
-          else {
-             print ("No hay noticias que coincidan");
-          }
-          
-    
-    // Cerrar 
-    mysqli_close ($conexion);
-    
-    ?>
-    
-    </BODY>
-    </HTML>
+// Mostrar resultados de la consulta
+$nfilas = mysqli_num_rows($consulta);
+if ($nfilas > 0) {
+    print("<TABLE>\n");
+    print("<TR>\n");
+    print("<TH>Modelo</TH>\n");
+    print("<TH>Marca</TH>\n");
+    print("<TH>Color</TH>\n");
+    print("<TH>Precio</TH>\n");
+    print("<TH>Alquilado</TH>\n");
+    print("<TH>Foto</TH>\n");
+    print("<TH>Acción</TH>\n");
+    print("</TR>\n");
+
+    for ($i = 0; $i < $nfilas; $i++) {
+        $resultado = mysqli_fetch_array($consulta);
+        print("<TR>\n");
+        print("<TD>" . $resultado['modelo'] . "</TD>\n");
+        print("<TD>" . $resultado['marca'] . "</TD>\n");
+        print("<TD>" . $resultado['color'] . "</TD>\n");
+        print("<TD>" . $resultado['precio'] . "</TD>\n");
+        print("<TD>" . $resultado['alquilado'] . "</TD>\n");
+        print("<TD><img src='" . $resultado['foto'] . "' width='80px'></TD>\n");
+
+        if ($resultado['alquilado'] == 'si') {
+            print("<TD>No disponible</TD>\n");
+        } elseif ($resultado['alquilado'] == 'no') {
+            print("<TD><form action='alquilar.php' method='post'>");
+            print("<input type='hidden' name='coche_id' value='" . $resultado['id_coche'] . "'>");
+            print("<input type='submit' value='Alquilar'>");
+            print("</form></TD>\n");
+        }
+        print("</TR>\n");
+    }
+
+    print("</TABLE>\n");
+} else {
+    print("No hay coches que coincidan");
+}
+
+// Cerrar conexión
+mysqli_close($conexion);
+?>
     
 </BODY>
 </HTML>

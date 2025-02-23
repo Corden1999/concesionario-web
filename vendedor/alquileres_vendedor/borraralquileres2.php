@@ -188,9 +188,9 @@ if (isset($_POST['delete_ids']) && is_array($_POST['delete_ids'])) {
     $ids_to_delete_string = implode(",", $ids_to_delete);*/
 
     // Eliminar los pisos seleccionados
-    $sql = "DELETE FROM usuarios WHERE id_usuario IN ($ids_to_delete)";
+    $sql = "DELETE FROM coches WHERE id_coche IN ($ids_to_delete)";
     if (mysqli_query($conn, $sql)) {
-        echo "<h1>Usuarios eliminados correctamente</h1>";
+        echo "<h1>coches eliminados correctamente</h1>";
     } else {
         echo "<h1>Error al eliminar usuarios: " . mysqli_error($conn) . "</h1>";
     }
@@ -201,7 +201,7 @@ if (isset($_POST['delete_ids']) && is_array($_POST['delete_ids'])) {
 mysqli_close($conn);
 
 // Volver al listado
-echo "<a href='borrarusuarios.php'>Volver al listado</a>";
+echo "<a href='borraralquileres.php'>Volver al listado</a>";
 ?>
 </body>
 

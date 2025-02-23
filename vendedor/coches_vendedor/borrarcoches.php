@@ -280,7 +280,8 @@ $conn = mysqli_connect("localhost", "root", "rootroot", "concesionario");
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
-$sql = "SELECT id_coche, modelo, marca, color, precio, alquilado, foto FROM coches";
+$id_vendedor = $_SESSION['id_usuario'];
+$sql = "SELECT id_coche, modelo, marca, color, precio, alquilado, foto FROM coches where id_usuario=$id_vendedor";
 $result = mysqli_query($conn, $sql);
 if (mysqli_num_rows($result) > 0) {
     echo "<h1>Borrado de coches</h1>";

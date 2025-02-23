@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <HTML LANG="es">
     <HEAD>
         <meta charset="UTF-8">
@@ -34,30 +37,6 @@
             header h1 {
                 font-size: 2.5em;
                 margin: 0;
-            }
-            
-            /* Contenedor para los botones de inicio de sesión y registro */
-            .header-buttons {
-                position: absolute;
-                top: 50%;
-                right: 20px;
-                transform: translateY(-50%);
-                display: flex;
-                gap: 10px;
-            }
-            
-            /* Estilo para los botones del encabezado */
-            .header-buttons a {
-                padding: 10px 20px;
-                background-color: #555;
-                color: #fff;
-                text-decoration: none;
-                border: 1px solid #444;
-                border-radius: 5px;
-            }
-            
-            .header-buttons a:hover {
-                background-color: #666;
             }
             
             /* Estilo del menú horizontal */
@@ -181,49 +160,51 @@
             .form-container .buttons input:hover {
                 background-color: #666;
             }
+
+            /* Estilo para el contenedor de bienvenida */
+            .welcome-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #555;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            text-align: right;
+            }
+
+            .welcome-container a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9em;
+            }
+
+            .welcome-container a:hover {
+            text-decoration: underline;
+            }
         </style>
     </HEAD>
     <BODY>
         <header>
             <h1>Concesionario de Coches</h1>
+            
         </header>
         
-        <nav>
-            <ul class="menu">
-                <!-- Menú principal horizontal -->
-                <li class="menu-item">
-                    <a>Coches</a>
-                    <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="../coches/añadircoches.html">Añadir</a></li>
-                        <li><a href="../coches/listarcoches.php">Listar</a></li>
-                        <li><a href="../coches/buscarcoches.html">Buscar</a></li>
-                        <li><a href="../coches/modificarcoches.html">Modificar</a></li>
-                        <li><a href="../coches/borrarcoches.php">Borrar</a></li>
-                    </ul>
-                </li>
-                <li class="menu-item">
-                    <a>Usuarios</a>
-                    <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="añadirusuarios.html">Añadir</a></li>
-                        <li><a href="listarusuarios.php">Listar</a></li>
-                        <li><a href="buscarusuarios.html">Buscar</a></li>
-                        <li><a href="modificarusuarios.html">Modificar</a></li>
-                        <li><a href="borrarusuarios.php">Borrar</a></li>
-                    </ul>
-                </li>
-                <li class="menu-item">
-                    <a>Alquileres</a>
-                    <ul class="submenu">
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="../alquileres/listaralquileres.php">Listar</a></li>
-                        <li><a href="../alquileres/borraralquileres.php">Borrar</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
 <?php
+$name = $_SESSION['name'];
+
+echo "<div class='welcome-container'>
+    <strong>¡Bienvenido!</strong> $name
+    <p><a href='edit-profile.php'>Editar Ficha</a></p>
+    <p><a href='logout.php'>Logout</a></p>
+    </div>";	
+
+// Verificar si el usuario está logueado
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php");
+    exit();
+}
+
 // Configuración de la base de datos
 $servername = "localhost";
 $username = "root";
@@ -237,21 +218,26 @@ $conn = mysqli_connect($servername, $username, $password, $dbname);
 if (!$conn) {
     die("Conexión fallida: " . mysqli_connect_error());
 }
+
 // Recuperar datos del formulario
-$id_usuario=$_POST['id_usuario'];
-$password =  $_POST['contraseña'];
-$nombre =  $_POST['nombre'];
+$contraseña = $_POST['contraseña'];
+$nombre = $_POST['nombre'];
 $apellidos = $_POST['apellidos'];
 $dni = $_POST['dni'];
 $saldo = $_POST['saldo'];
 
-
-// Preparar y ejecutar la consulta de inserción
-$sql = "UPDATE usuarios SET password='$password', nombre='$nombre', apellidos='$apellidos', dni='$dni', saldo='$saldo' WHERE id_usuario='$id_usuario'";
-
+// Preparar y ejecutar la consulta de actualización
+$id_usuario = $_SESSION['id_usuario'];
+$sql = "UPDATE usuarios SET 
+        password = '$contraseña', 
+        name = '$nombre', 
+        apellidos = '$apellidos', 
+        email = '$dni', 
+        saldo = '$saldo' 
+        WHERE id_usuario = '$id_usuario'";
 
 if (mysqli_query($conn, $sql)) {
-    echo "usuario actualizado con éxito.";
+    echo "Usuario actualizado con éxito.";
 } else {
     echo "Error al actualizar: " . mysqli_error($conn);
 }

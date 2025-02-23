@@ -13,7 +13,7 @@
 	$email = $_POST['email']; 
 	$password = $_POST['password'];
 	
-	$result = mysqli_query($conn, "SELECT Email, Password, Name, tipo FROM usuarios WHERE Email = '$email'");
+	$result = mysqli_query($conn, "SELECT id_usuario, Email, Password, Name, tipo FROM usuarios WHERE Email = '$email'");
 	
 	$row = mysqli_fetch_assoc($result);
 	
@@ -23,6 +23,7 @@
 	
 	if (password_verify($password, $hash)) {	
 		$_SESSION['loggedin'] = true;
+		$_SESSION['id_usuario'] = $row['id_usuario'];
 		$_SESSION['name'] = $row['Name'];
         $_SESSION['tipo'] = $row['tipo'];
 		$_SESSION['start'] = time();

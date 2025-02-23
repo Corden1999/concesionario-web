@@ -252,66 +252,79 @@ session_start();
                         <li><a href="../index_comprador.php">Inicio</a></li>
                         <li><a href="listarcoches.php">Listar</a></li>
                         <li><a href="buscarcoches1.php">Buscar</a></li>
+                        <li><a href="devolvercoches.php">Devolver</a></li>
                     </ul>
             </ul>
     </nav>
 
     <H1>Listar Coches</H1>
 
-    <?PHP
-        $name = $_SESSION['name'];
+    <?php
+session_start(); // Iniciar sesión
 
-        echo "<div class='welcome-container'>
-            <strong>¡Bienvenido!</strong> $name
-            <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
-            <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
-            </div>";	
+$name = $_SESSION['name'];
 
-        // Conectar con el servidor de base de datos
-        $conexion = mysqli_connect ("localhost", "root", "rootroot")
-            or die ("No se puede conectar con el servidor");
-        
-        // Seleccionar base de datos
-        mysqli_select_db ($conexion,"concesionario")
-            or die ("No se puede seleccionar la base de datos");
-        
-        // Enviar consulta
-        $instruccion = "select * from Coches";
-        $consulta = mysqli_query ($conexion,$instruccion)
-            or die ("Fallo en la consulta");
-        
-        // Mostrar resultados de la consulta
-        $nfilas = mysqli_num_rows ($consulta);
-        if ($nfilas > 0) {
-            print ("<TABLE>\n");
-            print ("<TR>\n");
-            print ("<TH>Modelo</TH>\n");
-            print ("<TH>Marca</TH>\n");
-            print ("<TH>Color</TH>\n");
-            print ("<TH>Precio</TH>\n");
-            print ("<TH>Alquilado</TH>\n");
-            print ("<TH>Foto</TH>\n");
-            print ("</TR>\n");
+echo "<div class='welcome-container'>
+    <strong>¡Bienvenido!</strong> $name
+    <p><a href='../../sesion_registro/edit-profile.php'>Editar Ficha</a></p>
+    <p><a href='../../sesion_registro/logout.php'>Logout</a></p>
+    </div>";	
 
-            for ($i=0; $i<$nfilas; $i++) {
-                $resultado = mysqli_fetch_array ($consulta);
-                print ("<TR>\n");
-                print ("<TD>" . $resultado['modelo'] . "</TD>\n");
-                print ("<TD>" . $resultado['marca'] . "</TD>\n");
-                print ("<TD>" . $resultado['color'] . "</TD>\n");
-                print ("<TD>" . $resultado['precio'] . "</TD>\n");
-                print ("<TD>" . $resultado['alquilado'] . "</TD>\n");
-                print ("<TD><img src='" . $resultado['foto'] . "' width='80px'></TD>\n");
-                print ("</TR>\n");
-            }
+// Conectar con el servidor de base de datos
+$conexion = mysqli_connect("localhost", "root", "rootroot")
+    or die("No se puede conectar con el servidor");
 
-            print ("</TABLE>\n");
-        } else {
-            print ("No hay coches disponibles");
+// Seleccionar base de datos
+mysqli_select_db($conexion, "concesionario")
+    or die("No se puede seleccionar la base de datos");
+
+// Enviar consulta
+$instruccion = "SELECT * FROM coches"; // Corregido el nombre de la tabla
+$consulta = mysqli_query($conexion, $instruccion)
+    or die("Fallo en la consulta");
+
+// Mostrar resultados de la consulta
+$nfilas = mysqli_num_rows($consulta);
+if ($nfilas > 0) {
+    print("<TABLE>\n");
+    print("<TR>\n");
+    print("<TH>Modelo</TH>\n");
+    print("<TH>Marca</TH>\n");
+    print("<TH>Color</TH>\n");
+    print("<TH>Precio</TH>\n");
+    print("<TH>Alquilado</TH>\n");
+    print("<TH>Foto</TH>\n");
+    print("<TH>Acción</TH>\n");
+    print("</TR>\n");
+
+    for ($i = 0; $i < $nfilas; $i++) {
+        $resultado = mysqli_fetch_array($consulta);
+        print("<TR>\n");
+        print("<TD>" . $resultado['modelo'] . "</TD>\n");
+        print("<TD>" . $resultado['marca'] . "</TD>\n");
+        print("<TD>" . $resultado['color'] . "</TD>\n");
+        print("<TD>" . $resultado['precio'] . "</TD>\n");
+        print("<TD>" . $resultado['alquilado'] . "</TD>\n");
+        print("<TD><img src='" . $resultado['foto'] . "' width='80px'></TD>\n");
+
+        if ($resultado['alquilado'] == 'si') {
+            print("<TD>No disponible</TD>\n");
+        } elseif ($resultado['alquilado'] == 'no') {
+            print("<TD><form action='alquilar.php' method='post'>");
+            print("<input type='hidden' name='coche_id' value='" . $resultado['id_coche'] . "'>"); // Corregido el nombre de la columna
+            print("<input type='submit' value='Alquilar'>");
+            print("</form></TD>\n");
         }
+        print("</TR>\n");
+    }
 
-        // Cerrar conexión
-        mysqli_close ($conexion);
-    ?>
+    print("</TABLE>\n");
+} else {
+    print("No hay coches disponibles");
+}
+
+// Cerrar conexión
+mysqli_close($conexion);
+?>
 </BODY>
 </HTML>
