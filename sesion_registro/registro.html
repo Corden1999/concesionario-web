@@ -244,7 +244,7 @@
         <!-- Formulario centrado -->
         <div class="form-container">
             <h2>Formulario de Registro</h2>
-            <form action="registro.php" method="post" enctype="multipart/form-data">
+            <form action="registro.php" method="post" enctype="multipart/form-data" onsubmit="return validarFormulario()">
                 <label for="nombre">Nombre:</label>
                 <input type="text" id="nombre" name="nombre" required>
     
@@ -277,25 +277,5 @@
                 </div>
             </form>
         </div>
-        <script>
-            function validarFormulario() {
-                // Validar DNI
-                var dni = document.getElementById('dni').value;
-                if (dni.length !== 9) {
-                    alert("El DNI debe tener exactamente 9 caracteres.");
-                    return false;
-                }
-        
-                // Validar tipo de usuario
-                var tipoUsuario = document.getElementById('tipo').value;
-                if (tipoUsuario === "seleccione") {
-                    alert("Por favor, seleccione un tipo de usuario válido.");
-                    return false;
-                }
-        
-                // Si todo está correcto, se envía el formulario
-                return true;
-            }
-        </script>
     </BODY>
 </HTML>
