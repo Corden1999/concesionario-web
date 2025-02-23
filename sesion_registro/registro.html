@@ -277,5 +277,25 @@
                 </div>
             </form>
         </div>
+        <script>
+            function validarFormulario() {
+                // Validar DNI
+                var dni = document.getElementById('dni').value;
+                if (dni.length !== 9) {
+                    alert("El DNI debe tener exactamente 9 caracteres.");
+                    return false;
+                }
+        
+                // Validar tipo de usuario
+                var tipoUsuario = document.getElementById('tipo').value;
+                if (tipoUsuario === "seleccione") {
+                    alert("Por favor, seleccione un tipo de usuario válido.");
+                    return false;
+                }
+        
+                // Si todo está correcto, se envía el formulario
+                return true;
+            }
+        </script>
     </BODY>
 </HTML>
